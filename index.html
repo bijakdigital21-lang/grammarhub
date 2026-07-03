@@ -3,132 +3,1483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grammar Hub</title>
+    <title>Grammar Hub - Learn English Grammar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --primary: #4a90e2; --secondary: #f5a623; --success: #7ed321; --danger: #d0021b; --bg: #f0f7ff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        button { padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .topic-card { background: #fff; padding: 15px; border-radius: 15px; text-align: center; border: 2px solid var(--primary); cursor: pointer; }
-        .hidden { display: none; }
-        #nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Quicksand:wght@400..700&display=swap');
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #F0F9FF;
+        }
+        .heading-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B',
+                            teal: '#14B8A6',
+                            blue: '#3B82F6',
+                            green: '#10B981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col pb-20">
 
-<div id="app">
-    <div id="login-screen" class="card">
-        <h1>Grammar Hub</h1>
-        <p>Welcome! Enter your name to start learning.</p>
-        <input type="text" id="student-name" placeholder="Enter Your Name" style="padding: 10px; width: 80%;">
-        <button class="btn-primary" onclick="startApp()">Start Learning</button>
-    </div>
+    <header id="appHeader" class="hidden bg-white shadow-sm border-b border-slate-100 sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-brand-purple text-white p-2 rounded-xl shadow-md shadow-purple-200">
+                    <i data-lucide="sparkles" class="w-5 h-5 animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="heading-font text-xl text-brand-purple tracking-wide">Grammar Hub</h1>
+                    <p class="text-xs text-slate-400 font-medium">Hello, <span id="headerStudentName" class="text-brand-pink font-bold">Student</span>!</p>
+                </div>
+            </div>
+            <div class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-bold flex items-center space-x-1 shadow-sm">
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 stroke-amber-500"></i>
+                <span id="headerStars">0</span>
+            </div>
+        </div>
+    </header>
 
-    <div id="home-screen" class="hidden">
-        <h2 id="welcome-msg"></h2>
-        <h3>Choose a Grammar Topic</h3>
-        <div class="grid" id="topic-grid"></div>
-    </div>
+    <main class="flex-grow max-w-2xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
 
-    <div id="lesson-screen" class="hidden card">
-        <h2 id="lesson-title"></h2>
-        <div id="lesson-content"></div>
-        <button class="btn-primary" onclick="startQuiz()">Start Quiz</button>
-    </div>
+        <section id="screenWelcome" class="w-full text-center space-y-8 py-8 animate-fade-in">
+            <div class="space-y-4">
+                <div class="inline-flex bg-gradient-to-tr from-brand-purple to-brand-pink text-white p-6 rounded-3xl shadow-xl shadow-purple-200 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <i data-lucide="book-open-check" class="w-16 h-16"></i>
+                </div>
+                <h1 class="heading-font text-4xl md:text-5xl text-brand-purple tracking-wide drop-shadow-sm">Grammar Hub</h1>
+                <p class="text-slate-500 text-lg max-w-md mx-auto px-4">Learn, Practise, and Master English Grammar the Fun Way! 🚀</p>
+            </div>
 
-    <div id="quiz-screen" class="hidden card">
-        <div id="quiz-progress"></div>
-        <div id="question-text"></div>
-        <div id="options-container"></div>
-        <div id="feedback"></div>
-    </div>
-</div>
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 max-w-md mx-auto space-y-6">
+                <div class="text-left space-y-2">
+                    <label for="studentNameInput" class="block font-bold text-slate-700 text-base">Enter Your Name to Begin:</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-4 top-3.5 text-slate-400 w-5 h-5"></i>
+                        <input type="text" id="studentNameInput" maxlength="20" placeholder="Type your beautiful name here..." 
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:border-brand-purple focus:outline-none font-semibold text-lg transition-colors placeholder:text-slate-400 placeholder:font-normal">
+                    </div>
+                </div>
+                <button onclick="handleStartLearning()" class="w-full bg-gradient-to-r from-brand-purple to-brand-pink text-white font-bold text-xl py-4 rounded-2xl shadow-lg shadow-purple-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-2 heading-font tracking-wide">
+                    <span>Start Learning!</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
 
-<div id="nav-bar" class="hidden">
-    <button onclick="showScreen('home-screen')">Home</button>
-    <button onclick="alert('Progress view coming soon!')">Progress</button>
-    <button onclick="alert('Grammar Hub v1.0')">About</button>
-</div>
+        <section id="screenTopics" class="hidden w-full space-y-6 animate-fade-in">
+            <div class="bg-gradient-to-r from-brand-blue to-cyan-500 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 opacity-10">
+                    <i data-lucide="graduation-cap" class="w-40 h-40"></i>
+                </div>
+                <h2 class="heading-font text-2xl md:text-3xl tracking-wide">Welcome, <span id="welcomeStudentName">Learner</span>! 👋</h2>
+                <p class="text-sky-100 mt-1 font-medium text-sm md:text-base">Choose a topic below to explore lessons and take fun quizzes!</p>
+            </div>
 
-<script>
-    // Data structure easily extendable
-    const data = {
-        "Nouns": {
-            lesson: "A noun is a word that names a person, place, animal, or thing.",
-            examples: ["Ali", "School", "Cat", "Apple"],
-            tips: "A noun names someone or something.",
-            questions: [
-                { q: "Ali is a ___.", a: ["boy", "run", "fast", "is"], correct: 0, exp: "Ali is a person, which is a noun." }
-            ]
-        }
-        // Add more topics here following the same structure
-    };
+            <div class="space-y-3">
+                <h3 class="heading-font text-xl text-slate-700 tracking-wide flex items-center space-x-2">
+                    <i data-lucide="book-open" class="text-brand-purple w-5 h-5"></i>
+                    <span>Grammar Topics</span>
+                </h3>
+                <div id="topicsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    </div>
+            </div>
+        </section>
 
-    let state = { name: "", currentTopic: "", score: 0, currentQ: 0 };
+        <section id="screenLesson" class="hidden w-full space-y-6 animate-fade-in">
+            <button onclick="navigateTo('Topics')" class="inline-flex items-center space-x-2 text-slate-500 font-bold hover:text-brand-purple transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Back to Topics</span>
+            </button>
 
-    function startApp() {
-        const name = document.getElementById('student-name').value;
-        if (!name) return alert("Please enter your name.");
-        state.name = name;
-        document.getElementById('welcome-msg').innerText = `Welcome, ${name}!`;
-        showScreen('home-screen');
-        renderTopics();
-    }
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+                <div id="lessonHeaderBanner" class="p-6 text-white bg-gradient-to-r from-brand-purple to-brand-pink">
+                    <span id="lessonCategoryBadge" class="bg-white/20 text-white font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full">Topic Lesson</span>
+                    <h2 id="lessonTopicTitle" class="heading-font text-3xl mt-2 tracking-wide">Topic Title</h2>
+                </div>
 
-    function renderTopics() {
-        const grid = document.getElementById('topic-grid');
-        Object.keys(data).forEach(t => {
-            grid.innerHTML += `<div class="topic-card" onclick="loadLesson('${t}')">${t}</div>`;
+                <div class="p-6 space-y-8">
+                    <div class="space-y-2">
+                        <h3 class="font-bold text-lg text-brand-purple flex items-center space-x-2">
+                            <i data-lucide="info" class="w-5 h-5"></i>
+                            <span>Introduction</span>
+                        </h3>
+                        <p id="lessonIntroduction" class="text-slate-600 bg-purple-50/50 p-4 rounded-2xl border border-purple-100/50 leading-relaxed text-base">Concept text goes here...</p>
+                    </div>
+
+                    <div id="lessonTypesContainer" class="space-y-3 hidden">
+                        <h3 class="font-bold text-lg text-brand-teal flex items-center space-x-2">
+                            <i data-lucide="layers" class="w-5 h-5"></i>
+                            <span>Types & Subcategories</span>
+                        </h3>
+                        <div id="lessonTypes" class="grid grid-cols-1 gap-3"></div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-lg text-brand-blue flex items-center space-x-2">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            <span>Easy Examples</span>
+                        </h3>
+                        <ul id="lessonExamples" class="grid grid-cols-1 md:grid-cols-2 gap-3"></ul>
+                    </div>
+
+                    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200/60 flex items-start space-x-3">
+                        <div class="bg-amber-400 text-white p-2 rounded-xl shrink-0 shadow-sm shadow-amber-200">
+                            <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-amber-800 text-base">Remember Tip!</h4>
+                            <p id="lessonTips" class="text-amber-700 text-sm mt-0.5 leading-relaxed">Tip summary here...</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-rose-50 rounded-2xl p-5 border border-rose-100 flex flex-col space-y-3">
+                        <h4 class="font-bold text-rose-800 text-base flex items-center space-x-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-500"></i>
+                            <span>Common Mistakes to Avoid</span>
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white/60 p-3 rounded-xl border border-rose-200/50">
+                                <span class="text-rose-600 font-extrabold text-xs tracking-wider block uppercase mb-1">❌ Incorrect:</span>
+                                <p id="lessonMistakeIncorrect" class="text-slate-600 font-medium text-sm line-through decoration-rose-300"></p>
+                            </div>
+                            <div class="bg-white/60 p-3 rounded-xl border border-emerald-200/50">
+                                <span class="text-emerald-600 font-extrabold text-xs tracking-wider block uppercase mb-1">✅ Correct:</span>
+                                <p id="lessonMistakeCorrect" class="text-slate-700 font-bold text-sm"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-5 border border-emerald-100">
+                        <h4 id="summaryTitle" class="font-bold text-emerald-800 text-base border-b border-emerald-200/60 pb-2 mb-3 tracking-wide flex items-center space-x-2">
+                            <i data-lucide="clipboard-list" class="w-5 h-5 text-emerald-600"></i>
+                            <span>Quick Summary</span>
+                        </h4>
+                        <div id="lessonSummaryItems" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border-t border-slate-100 p-6 flex justify-end">
+                    <button onclick="startQuizModule()" class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-md shadow-emerald-100 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center space-x-2 heading-font tracking-wide">
+                        <span>Start Quiz Now!</span>
+                        <i data-lucide="play" class="w-5 h-5 fill-white"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenQuiz" class="hidden w-full space-y-6 animate-fade-in">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500 font-bold text-sm">Topic: <span id="quizTopicTitle" class="text-brand-purple">Nouns</span></span>
+                    <span id="quizProgressCounter" class="bg-slate-100 text-slate-700 font-extrabold px-3 py-1 rounded-full text-xs">Question 1 of 10</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div id="quizProgressBar" class="bg-gradient-to-r from-brand-purple to-brand-pink h-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 flex flex-col space-y-6">
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                    <h3 id="quizQuestionText" class="text-slate-800 font-bold text-lg md:text-xl leading-relaxed whitespace-pre-line">Loading question structure details...</h3>
+                </div>
+
+                <div id="quizOptionsGrid" class="grid grid-cols-1 gap-3.5">
+                    </div>
+
+                <div id="quizFeedbackPanel" class="hidden rounded-2xl p-5 border transform transition-all duration-300">
+                    <div class="flex items-start space-x-3">
+                        <div id="quizFeedbackIconBox" class="p-2 rounded-xl text-white shrink-0 shadow-sm">
+                            <i id="quizFeedbackIcon" data-lucide="check" class="w-6 h-6"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 id="quizFeedbackStatusText" class="font-extrabold text-lg">Correct!</h4>
+                            <p id="quizFeedbackExplanation" class="text-sm leading-relaxed font-medium">Explanation message explaining standard logic maps...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center gap-4">
+                <button id="btnPrevQuestion" onclick="navigateQuizQuestion(-1)" class="flex-1 bg-white border border-slate-200 text-slate-600 font-bold py-3.5 rounded-xl shadow-sm hover:bg-slate-50 active:scale-95 transition-all flex items-center justify-center space-x-2 disabled:opacity-40 disabled:pointer-events-none">
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                    <span>Previous</span>
+                </button>
+                <button id="btnNextQuestion" onclick="navigateQuizQuestion(1)" class="flex-1 bg-brand-purple text-white font-bold py-3.5 rounded-xl shadow-md shadow-purple-100 hover:shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2 disabled:opacity-40 disabled:pointer-events-none">
+                    <span id="btnNextText">Next Question</span>
+                    <i id="btnNextIcon" data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="screenResult" class="hidden w-full text-center space-y-6 animate-fade-in">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 max-w-md mx-auto relative overflow-hidden space-y-6">
+                
+                <div class="space-y-2">
+                    <h2 id="resultPerformanceMsg" class="heading-font text-3xl text-brand-purple tracking-wide">Excellent Work!</h2>
+                    <p class="text-slate-500 font-bold text-sm"><span id="resultStudentName" class="text-brand-pink">Ali</span> completed <span id="resultTopicName" class="text-slate-700">Nouns</span></p>
+                </div>
+
+                <div id="resultStarsBox" class="flex justify-center items-center space-x-2 py-2">
+                    </div>
+
+                <div class="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Score</span>
+                        <p class="text-2xl font-extrabold text-slate-700 mt-0.5"><span id="resultRawScore">0</span> / 10</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider block">Percentage</span>
+                        <p id="resultPercentage" class="text-2xl font-extrabold text-brand-purple mt-0.5">0%</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                        <span class="text-xs text-emerald-500 font-bold uppercase tracking-wider block">Correct</span>
+                        <p id="resultCorrectCount" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                        <span class="text-xs text-rose-500 font-bold uppercase tracking-wider block">Incorrect</span>
+                        <p id="resultIncorrectCount" class="text-xl font-extrabold text-rose-600 mt-0.5">0</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col space-y-3 pt-2">
+                    <button onclick="retryCurrentTopic()" class="w-full bg-brand-purple text-white font-bold py-3.5 rounded-xl shadow-md shadow-purple-100 hover:scale-[1.01] transition-transform flex items-center justify-center space-x-2">
+                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        <span>Retry Topic</span>
+                    </button>
+                    <button onclick="navigateTo('Topics')" class="w-full bg-slate-100 text-slate-700 font-bold py-3.5 rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center space-x-2">
+                        <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                        <span>Choose Another Topic</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenProgress" class="hidden w-full space-y-6 animate-fade-in">
+            <h2 class="heading-font text-2xl text-slate-700 tracking-wide flex items-center space-x-2">
+                <i data-lucide="bar-chart-3" class="text-brand-purple w-6 h-6"></i>
+                <span>Your Session Progress</span>
+            </h2>
+            <p class="text-xs text-slate-400 font-medium -mt-4 bg-amber-50 text-amber-700 border border-amber-200 p-2.5 rounded-xl flex items-center space-x-2">
+                <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+                <span>Progress saves for your current active session only. Closing the window clears the stats.</span>
+            </p>
+
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center space-y-1">
+                    <div class="inline-flex bg-purple-100 text-brand-purple p-2.5 rounded-xl">
+                        <i data-lucide="check-square" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 block uppercase tracking-wider">Completed</span>
+                    <span id="progressStatCompleted" class="text-xl font-extrabold text-slate-700 block">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center space-y-1">
+                    <div class="inline-flex bg-amber-100 text-amber-500 p-2.5 rounded-xl">
+                        <i data-lucide="star" class="w-5 h-5 fill-amber-400 stroke-amber-500"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 block uppercase tracking-wider">Stars</span>
+                    <span id="progressStatStars" class="text-xl font-extrabold text-slate-700 block">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center space-y-1">
+                    <div class="inline-flex bg-emerald-100 text-emerald-500 p-2.5 rounded-xl">
+                        <i data-lucide="award" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 block uppercase tracking-wider">Avg Score</span>
+                    <span id="progressStatAvg" class="text-xl font-extrabold text-slate-700 block">0%</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="bg-slate-50 border-b border-slate-100 px-5 py-4">
+                    <h3 class="font-bold text-slate-700 text-base">Topic Completion Log</h3>
+                </div>
+                <div id="progressLogContainer" class="divide-y divide-slate-100 max-h-72 overflow-y-auto custom-scrollbar">
+                    <div class="p-8 text-center text-slate-400 space-y-2">
+                        <i data-lucide="history" class="w-8 h-8 mx-auto opacity-50"></i>
+                        <p class="text-sm font-medium">No topics finished yet. Start learning to track scores!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenAbout" class="hidden w-full space-y-6 animate-fade-in text-center max-w-md mx-auto">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100 space-y-6">
+                <div class="space-y-2">
+                    <div class="inline-flex bg-gradient-to-tr from-brand-purple to-brand-pink text-white p-4 rounded-2xl shadow-md">
+                        <i data-lucide="sparkles" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="heading-font text-2xl text-brand-purple tracking-wide">Grammar Hub</h2>
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Version 1.0</p>
+                </div>
+                
+                <hr class="border-slate-100">
+
+                <div class="text-slate-600 text-sm leading-relaxed space-y-4 text-left">
+                    <p class="font-bold text-center text-slate-700 text-base">English Grammar Learning Platform</p>
+                    <p class="text-center bg-slate-50 py-2.5 px-4 rounded-xl font-semibold text-brand-purple">Designed for Malaysian Primary School Students (Ages 7–12)</p>
+                    
+                    <div class="bg-purple-50 rounded-xl p-4 border border-purple-100 space-y-2">
+                        <span class="text-xs font-bold text-brand-purple uppercase tracking-widest block">Core Workflow Loop:</span>
+                        <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+                            <span>Learn</span>
+                            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            <span>Practise</span>
+                            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            <span>Improve!</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-xs text-slate-400">
+                        <span class="font-bold text-slate-500 block">Future Expansion Horizons include:</span>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Audio pronunciation & Read-aloud lessons</li>
+                            <li>Interactive flashcards & Mini-games modules</li>
+                            <li>Downloadable and printable worksheets PDF assets</li>
+                            <li>Teacher dashboard system tracking modes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav id="appNavBar" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/80 shadow-lg px-2 py-2 z-50">
+        <div class="max-w-xl mx-auto flex justify-around items-center">
+            <button onclick="navigateTo('Topics')" id="navLinkTopics" class="flex flex-col items-center justify-center w-16 py-1 rounded-xl text-brand-purple transition-all scale-100">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold mt-1 tracking-wide">Home</span>
+            </button>
+            <button onclick="navigateTo('Progress')" id="navLinkProgress" class="flex flex-col items-center justify-center w-16 py-1 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+                <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold mt-1 tracking-wide">Progress</span>
+            </button>
+            <button onclick="navigateTo('About')" id="navLinkAbout" class="flex flex-col items-center justify-center w-16 py-1 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+                <i data-lucide="help-circle" class="w-5 h-5"></i>
+                <span class="text-[10px] font-bold mt-1 tracking-wide">About</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        /=======================================================================
+         * 1. TOPIC DATABASE JSON OBJECT STRUCTURE DEFINITIONS (20 TOPICS)
+         *======================================================================/
+        const grammarDatabase = {
+            "nouns": {
+                "title": "Nouns",
+                "color": "from-purple-400 to-indigo-500",
+                "intro": "A noun is a naming word. It names a person, a place, an animal, or a thing.",
+                "types": [
+                    {"name": "Proper Nouns", "desc": "Special names for specific entities. (Always capitalized: Ali, Malaysia, Proton)"},
+                    {"name": "Common Nouns", "desc": "General names for things. (boy, country, car, cat, book)"}
+                ],
+                "examples": ["Ali is a brave boy.", "The cat is sleeping on the mat.", "I love visiting my school.", "This juicy apple is delicious."],
+                "tips": "A noun names someone or something. If you can put 'a', 'an', or 'the' before the word, it is usually a noun!",
+                "mistake": {
+                    "incorrect": "She is beautiful.",
+                    "correct": "She is a beautiful girl. ('beautiful' is an adjective description; 'girl' is the noun object.)"
+                },
+                "summary": ["Person", "Place", "Animal", "Thing"],
+                "questions": [
+                    {"q": "Choose the noun in the sentence: 'The cat is running fast.'", "a": ["cat", "running", "fast", "is"], "c": "cat", "e": "'cat' is an animal, which makes it a noun!"},
+                    {"q": "Which of these words is a proper noun?", "a": ["Kuala Lumpur", "city", "house", "river"], "c": "Kuala Lumpur", "e": "'Kuala Lumpur' is the specific name of a city, so it must start with capital letters."},
+                    {"q": "My _____ is working in the hospital.", "a": ["mother", "mothering", "beautiful", "run"], "c": "mother", "e": "'mother' is a person, which fills the subject position as a noun."},
+                    {"q": "Identify the thing in this list:", "a": ["pencil", "jump", "happy", "under"], "c": "pencil", "e": "'pencil' is a physical object you write with, making it a noun thing."},
+                    {"q": "Find the common noun here:", "a": ["dog", "Samy", "Malaysia", "Monday"], "c": "dog", "e": "'dog' is a general name for an animal, not a specific identity."},
+                    {"q": "We saw a giant _____ at the Zoo Negara.", "a": ["elephant", "big", "walk", "softly"], "c": "elephant", "e": "'elephant' is an animal name filling the noun position."},
+                    {"q": "Which word represents a place?", "a": ["school", "read", "yellow", "quickly"], "c": "school", "e": "'school' is a physical place where students go to learn."},
+                    {"q": "Choose the noun: 'The book belongs to Sarah.'", "a": ["book", "belongs", "to", "very"], "c": "book", "e": "'book' is an object thing. Note that 'Sarah' is also a proper noun!"},
+                    {"q": "Ipoh is a peaceful town. How many nouns are there in this sentence?", "a": ["2", "1", "3", "0"], "c": "2", "e": "There are two nouns: 'Ipoh' (proper noun) and 'town' (common noun)."},
+                    {"q": "Complete with a noun: 'The _____ blew softly through the open window.'", "a": ["wind", "windy", "blows", "coldly"], "c": "wind", "e": "'wind' is the name of a natural force thing, acting as the subject noun."}
+                ]
+            },
+            "pronouns": {
+                "title": "Pronouns",
+                "color": "from-pink-400 to-rose-500",
+                "intro": "A pronoun is a small word used to take the place of a noun so we don't repeat the same name over and over.",
+                "types": [
+                    {"name": "Subject Pronouns", "desc": "Used as the actor: I, You, He, She, It, We, They."},
+                    {"name": "Object Pronouns", "desc": "Receives the action: me, you, him, her, it, us, them."}
+                ],
+                "examples": ["Ali is a boy. He is ten years old.", "Siti and I are friends. We play together.", "The ball is small. It is green.", "Look at them! They are dancing."],
+                "tips": "Use 'He' for a boy, 'She' for a girl, 'It' for an animal or object, and 'They' for more than one person!",
+                "mistake": {
+                    "incorrect": "Me like to eat nasi lemak.",
+                    "correct": "I like to eat nasi lemak. ('Me' is an object pronoun. Use subject pronoun 'I' at the start.)"
+                },
+                "summary": ["Replaces Noun", "He / She", "It / They", "I / We / You"],
+                "questions": [
+                    {"q": "Replace the underlined word: '<u>Ahmad</u> is reading a book.'", "a": ["He", "She", "It", "They"], "c": "He", "e": "'He' is used to replace a single boy or man."},
+                    {"q": "Siti and Aminah are cooking. _____ are in the kitchen.", "a": ["They", "We", "She", "He"], "c": "They", "e": "Use 'They' for more than one person being spoken about."},
+                    {"q": "The puppy is cute. _____ is wagging its tail.", "a": ["It", "He", "They", "I"], "c": "It", "e": "Use 'It' for a single animal or object."},
+                    {"q": "My father bought a bicycle for _____ on my birthday.", "a": ["me", "I", "he", "we"], "c": "me", "e": "'me' is the correct object pronoun following the preposition 'for'."},
+                    {"q": "John and I are class monitors. _____ help the teacher.", "a": ["We", "They", "Us", "You"], "c": "We", "e": "'John and I' includes the speaker, so it becomes the subject pronoun 'We'."},
+                    {"q": "Can you please pass this ruler to _____? She needs it.", "a": ["her", "him", "she", "them"], "c": "her", "e": "The second sentence says 'She needs it', so we pass it to the object 'her'."},
+                    {"q": "Where are you going? Can I come with _____?", "a": ["you", "your", "they", "me"], "c": "you", "e": "'you' stays the same as both a subject and object pronoun."},
+                    {"q": "The children are loud. Tell _____ to be quiet.", "a": ["them", "they", "us", "him"], "c": "them", "e": "'them' is the object pronoun replacing the plural 'children'."},
+                    {"q": "_____ am doing my English homework right now.", "a": ["I", "Me", "He", "We"], "c": "I", "e": "The verb 'am' always pairs exclusively with the subject pronoun 'I'."},
+                    {"q": "Mr. Tan is our neighbor. _____ is a very kind teacher.", "a": ["He", "She", "Him", "It"], "c": "He", "e": "'Mr. Tan' is a male adult, so we use the subject pronoun 'He'."}
+                ]
+            },
+            "verbs": {
+                "title": "Verbs",
+                "color": "from-amber-400 to-orange-500",
+                "intro": "Verbs are action words! They tell us what a person, animal, or thing is doing.",
+                "types": [
+                    {"name": "Action Verbs", "desc": "Physical movements: run, jump, write, eat, sleep."},
+                    {"name": "Helping/State Verbs", "desc": "Linking conditions: am, is, are, was, were."}
+                ],
+                "examples": ["The boys play football in the field.", "Siti writes neatly in her notebook.", "Birds fly high up in the blue sky.", "I drink a cold glass of water."],
+                "tips": "To spot a verb, ask yourself: 'What action is happening in this sentence?'",
+                "mistake": {
+                    "incorrect": "The baby loudly.",
+                    "correct": "The baby cries loudly. (Every complete sentence needs a verb action like 'cries'.)"
+                },
+                "summary": ["Action Words", "Run / Jump", "Is / Are", "Tells Doing"],
+                "questions": [
+                    {"q": "Identify the action verb: 'Muthu swims in the pool every evening.'", "a": ["swims", "pool", "every", "Muthu"], "c": "swims", "e": "'swims' is the physical movement action word."},
+                    {"q": "The teacher _____ on the whiteboard with a marker.", "a": ["writes", "writing", "write", "writer"], "c": "writes", "e": "'writes' is the action for a singular teacher in the simple present tense."},
+                    {"q": "We must _____ our teeth twice a day.", "a": ["brush", "brushes", "brushed", "brushing"], "c": "brush", "e": "After the modal verb 'must', we use the base form of the verb: 'brush'."},
+                    {"q": "Choose the verb: 'The cat caught a mouse.'", "a": ["caught", "cat", "mouse", "a"], "c": "caught", "e": "'caught' is the past tense action of catching something."},
+                    {"q": "Please _____ your book to page 12.", "a": ["open", "opens", "opening", "opened"], "c": "open", "e": "Command sentences giving instructions use the base form verb 'open'."},
+                    {"q": "They _____ to school together every morning.", "a": ["walk", "walks", "walking", "walked"], "c": "walk", "e": "Plural subject 'They' takes the plural base form verb 'walk' in the present tense."},
+                    {"q": "Which of these words is NOT an action verb?", "a": ["happy", "dance", "sing", "throw"], "c": "happy", "e": "'happy' describes a feeling (adjective), it is not a physical action."},
+                    {"q": "The frogs _____ loudly into the deep pond.", "a": ["jumped", "jump", "jumping", "jumps"], "c": "jumped", "e": "Based on standard choices, 'jumped' represents a valid completed past action."},
+                    {"q": "I _____ an interesting storybook last night.", "a": ["read", "reads", "reading", "am read"], "c": "read", "e": "'last night' requires past tense. The past tense of 'read' is spelled the same: 'read'."},
+                    {"q": "Listen! The birds are _____ sweetly outside.", "a": ["singing", "sing", "sings", "sang"], "c": "singing", "e": "'are' followed by an action happening right now requires the '-ing' continuous form."}
+                ]
+            },
+            "adjectives": {
+                "title": "Adjectives",
+                "color": "from-teal-400 to-emerald-500",
+                "intro": "Adjectives are describing words. They tell us more about a noun (size, color, number, shape, or feelings).",
+                "types": [
+                    {"name": "Descriptive", "desc": "Qualities: beautiful, tall, kind, old, brave."},
+                    {"name": "Quantity/Number", "desc": "Amounts: three, many, some, few."}
+                ],
+                "examples": ["The smart student answered the quiz.", "Look at that beautiful flower!", "My father drives a big blue car.", "I have three little kittens."],
+                "tips": "Adjectives usually come directly BEFORE the noun they describe, or AFTER the verb 'is/am/are'!",
+                "mistake": {
+                    "incorrect": "The house blue is big.",
+                    "correct": "The blue house is big. (Place the color adjective 'blue' before the noun 'house'.)"
+                },
+                "summary": ["Describes", "Size / Color", "Before Nouns", "Shows Feeling"],
+                "questions": [
+                    {"q": "Find the adjective: 'The little girl cried for help.'", "a": ["little", "girl", "cried", "help"], "c": "little", "e": "'little' describes the size of the noun 'girl'."},
+                    {"q": "Malaysia has many _____ fruits like durians and rambutans.", "a": ["delicious", "sweetly", "taste", "eaten"], "c": "delicious", "e": "'delicious' is an adjective that describes the quality of the fruits."},
+                    {"q": "That elephant is huge! What does 'huge' mean?", "a": ["very big", "very small", "very fast", "very heavy"], "c": "very big", "e": "'huge' is a size descriptive adjective meaning very large or big."},
+                    {"q": "Choose the adjective: 'He wore a clean shirt to school.'", "a": ["clean", "wore", "shirt", "school"], "c": "clean", "e": "'clean' describes the condition of the shirt."},
+                    {"q": "There are _____ days in a week.", "a": ["seven", "seventh", "long", "slow"], "c": "seven", "e": "'seven' is a number adjective describing the quantity of days."},
+                    {"q": "The sunset looks absolutely _____ tonight.", "a": ["beautiful", "beautifully", "beauty", "beautify"], "c": "beautiful", "e": "Following the linking verb 'looks', we use the adjective 'beautiful'."},
+                    {"q": "Identify the adjective: 'The brave fireman saved the trapped puppy.'", "a": ["brave", "fireman", "saved", "puppy"], "c": "brave", "e": "'brave' describes the personality trait of the noun 'fireman'."},
+                    {"q": "I cannot lift this box because it is too _____.", "a": ["heavy", "light", "tall", "empty"], "c": "heavy", "e": "If you cannot lift it, the context implies the descriptive adjective weight is 'heavy'."},
+                    {"q": "Which word is an adjective?", "a": ["bright", "brightly", "shine", "sun"], "c": "bright", "e": "'bright' is an adjective (e.g. bright sun), while 'brightly' is an adverb."},
+                    {"q": "The ice cream is cold and _____.", "a": ["sweet", "sweetly", "sugar", "melted"], "c": "sweet", "e": "'sweet' is a taste adjective describing the condition of the ice cream."}
+                ]
+            },
+            "adverbs": {
+                "title": "Adverbs",
+                "color": "from-blue-400 to-cyan-500",
+                "intro": "Adverbs tell us more about a verb! They explain HOW, WHEN, or WHERE an action happens.",
+                "types": [
+                    {"name": "Adverbs of Manner", "desc": "Tells HOW an action is done (often ends in -ly: slowly, loudly, happily)."},
+                    {"name": "Adverbs of Time/Place", "desc": "Tells WHEN or WHERE (today, yesterday, here, outside)."}
+                ],
+                "examples": ["The turtle crawls slowly.", "The teacher spoke loudly to the class.", "We arrived early at the train station.", "It is raining outside."],
+                "tips": "Many adverbs of manner are made by simply adding '-ly' to an adjective (quick -> quickly)!",
+                "mistake": {
+                    "incorrect": "He ran quick to the door.",
+                    "correct": "He ran quickly to the door. (Use the adverb 'quickly' to describe HOW he ran.)"
+                },
+                "summary": ["Tells How", "Ends in -ly", "Tells When", "Tells Where"],
+                "questions": [
+                    {"q": "Choose the adverb: 'The student wrote the answers neatly.'", "a": ["neatly", "wrote", "answers", "student"], "c": "neatly", "e": "'neatly' tells how the student wrote, making it an adverb of manner."},
+                    {"q": "The thunder roared _____ during the storm.", "a": ["loudly", "loud", "loudness", "louded"], "c": "loudly", "e": "'loudly' is the adverb describing how the thunder roared."},
+                    {"q": "Ali ran _____ and won the 100-meter race.", "a": ["fastly", "fast", "slow", "quietly"], "c": "fast", "e": "'fast' is an irregular adverb; it does NOT take an '-ly'. 'Fastly' is incorrect English."},
+                    {"q": "We are going to the playground. Let's play _____.", "a": ["outside", "yesterday", "sadly", "slowly"], "c": "outside", "e": "'outside' is an adverb of place telling where the playing happens."},
+                    {"q": "Siti answers quiz questions _____, so she rarely makes mistakes.", "a": ["carefully", "careful", "careless", "carelessly"], "c": "carefully", "e": "'carefully' describes the positive, precise manner of answering."},
+                    {"q": "My grandfather walks _____ because his legs are weak.", "a": ["slowly", "quickly", "fast", "happily"], "c": "slowly", "e": "Weak legs imply the action of walking is performed 'slowly'."},
+                    {"q": "Identify the adverb: 'Yesterday, our school team won the football trophy.'", "a": ["Yesterday", "school", "won", "trophy"], "c": "Yesterday", "e": "'Yesterday' is an adverb of time telling when the action took place."},
+                    {"q": "The baby is sleeping soundly. Please speak _____.", "a": ["quietly", "loudly", "angry", "fast"], "c": "quietly", "e": "To avoid waking a sleeping baby, you must speak in a 'quietly' manner."},
+                    {"q": "He smiled _____ when he received his excellent results.", "a": ["happily", "happy", "sadly", "happiness"], "c": "happily", "e": "'happily' is the adverb describing the action of smiling."},
+                    {"q": "Which word is an adverb?", "a": ["suddenly", "sudden", "sad", "beautiful"], "c": "suddenly", "e": "'suddenly' ends in -ly and describes how an event occurs."}
+                ]
+            },
+            "articles": {
+                "title": "Articles",
+                "color": "from-indigo-400 to-violet-500",
+                "intro": "Articles are three special little words ('a', 'an', and 'the') that point out nouns.",
+                "types": [
+                    {"name": "A / An", "desc": "Used for ONE general object. Use 'an' before vowel sounds (A, E, I, O, U)."},
+                    {"name": "The", "desc": "Used for a specific object, or something unique (The Sun, The King)."}
+                ],
+                "examples": ["I want to eat a sweet banana.", "She wants an juicy orange.", "The sun shines brightly in the sky.", "Give me the red pen on your desk."],
+                "tips": "Look at the sound of the next word! We say 'an hour' because the 'h' is silent and sounds like a vowel 'ow'!",
+                "mistake": {
+                    "incorrect": "I saw a elephant at the zoo.",
+                    "correct": "I saw an elephant at the zoo. ('elephant' starts with a vowel sound 'e', so use 'an'.)"
+                },
+                "summary": ["A (Consonant)", "An (Vowel)", "The (Specific)", "Points Noun"],
+                "questions": [
+                    {"q": "My sister wants to buy _____ umbrella from the mall.", "a": ["an", "a", "the", "some"], "c": "an", "e": "'umbrella' starts with a vowel sound 'u', so it requires 'an'."},
+                    {"q": "_____ sky is covered with dark clouds.", "a": ["The", "A", "An", "Many"], "c": "The", "e": "There is only one unique 'sky', so we must use the specific article 'The'."},
+                    {"q": "Ahmad has _____ cat and two fish.", "a": ["a", "an", "the", "any"], "c": "a", "e": "'cat' starts with a consonant sound 'c', so we use 'a'."},
+                    {"q": "Would you like to have _____ ice cream cone?", "a": ["an", "a", "the", "no article"], "c": "an", "e": "'ice' starts with the vowel sound 'i', meaning 'an' is appropriate."},
+                    {"q": "My father is _____ honest policeman.", "a": ["an", "a", "the", "many"], "c": "an", "e": "'honest' starts with a silent 'h' and sounds like a vowel 'o', so we use 'an'."},
+                    {"q": "He is _____ tallest boy in our classroom.", "a": ["the", "a", "an", "this"], "c": "the", "e": "Superlative adjectives like 'tallest' always require the specific article 'the'."},
+                    {"q": "I saw _____ uniform hanging on the rack.", "a": ["a", "an", "the", "two"], "c": "a", "e": "'uniform' starts with a 'yoo' consonant sound, so it takes 'a', not 'an'!"},
+                    {"q": "_____ Petronas Twin Towers are located in Kuala Lumpur.", "a": ["The", "A", "An", "Those"], "c": "The", "e": "Specific, well-known landmarks require the article 'The'."},
+                    {"q": "She ate _____ apple that was on the dining table.", "a": ["the", "a", "an", "some"], "c": "the", "e": "It refers to a specific apple—the one that was on the table, so 'the' is best."},
+                    {"q": "Can you give me _____ piece of paper, please?", "a": ["a", "an", "the", "any"], "c": "a", "e": "'piece' begins with a consonant sound, so 'a piece' is correct."}
+                ]
+            },
+            "prepositions": {
+                "title": "Prepositions",
+                "color": "from-purple-500 to-pink-500",
+                "intro": "Prepositions are positioning words. They tell us WHERE something is or WHEN something happens.",
+                "types": [
+                    {"name": "Prepositions of Place", "desc": "Position: in, on, under, between, behind, beside."},
+                    {"name": "Prepositions of Time", "desc": "Schedule: at (time), on (days), in (months/years)."}
+                ],
+                "examples": ["The book is on the study table.", "The cat hid under the wooden chair.", "Our school assembly is on Monday.", "We sleep soundly at night."],
+                "tips": "Think of a box! A ball can be IN the box, ON the box, UNDER the box, or BEHIND the box!",
+                "mistake": {
+                    "incorrect": "I was born on July.",
+                    "correct": "I was born in July. (Use 'in' for months, use 'on' for specific calendar dates like July 4th.)"
+                },
+                "summary": ["In / On / Under", "Beside / At", "Shows Place", "Shows Time"],
+                "questions": [
+                    {"q": "The key is hidden _____ the heavy door mat.", "a": ["under", "in", "between", "at"], "c": "under", "e": "Mats lie flat on the floor, so keys are hidden beneath or 'under' them."},
+                    {"q": "Our English exam starts exactly _____ 8:30 a.m.", "a": ["at", "on", "in", "to"], "c": "at", "e": "Use the preposition 'at' for specific exact clock times."},
+                    {"q": "Siti sat _____ her two best friends, Aminah and Mary.", "a": ["between", "in", "on", "among"], "c": "between", "e": "Use 'between' when pointing out a position separating two distinct entities."},
+                    {"q": "The birds build their nests _____ the branches of trees.", "a": ["on", "under", "at", "into"], "c": "on", "e": "Nests sit atop the surface area of branches, hence 'on'."},
+                    {"q": "My birthday party is _____ Saturday afternoon.", "a": ["on", "in", "at", "by"], "c": "on", "e": "Always use 'on' for days of the week (Monday, Saturday, etc.)."},
+                    {"q": "Don't jump _____ the bed! You might fall down.", "a": ["on", "in", "under", "through"], "c": "on", "e": "Jumping happens on the upper surface of the bed, so 'on' fits."},
+                    {"q": "The rubbish bin is located _____ the kitchen door.", "a": ["behind", "in", "between", "at"], "c": "behind", "e": "'behind' indicates the rear location relative to the door."},
+                    {"q": "We went to Malacca _____ the school holidays.", "a": ["during", "at", "on", "between"], "c": "during", "e": "'during' is used to show an action happening throughout a span of time."},
+                    {"q": "He poured the orange juice _____ a clean glass.", "a": ["into", "on", "in", "under"], "c": "into", "e": "'into' shows movement from the outside to the inside of a container."},
+                    {"q": "The clock hanging _____ the wall is broken.", "a": ["on", "in", "at", "under"], "c": "on", "e": "Clocks are attached touching the vertical surface of a wall, so we use 'on'."}
+                ]
+            },
+            "conjunctions": {
+                "title": "Conjunctions",
+                "color": "from-teal-500 to-cyan-500",
+                "intro": "Conjunctions are joining words. They connect words, phrases, or complete sentences together like glue.",
+                "types": [
+                    {"name": "And / Or", "desc": "'And' joins similar ideas. 'Or' shows a choice between items."},
+                    {"name": "But / Because", "desc": "'But' shows differences/opposites. 'Because' explains the reason."}
+                ],
+                "examples": ["I like tea and coffee.", "Is that a cat or a dog?", "He is small but he is very strong.", "She stayed home because it was raining."],
+                "tips": "Remember 'FANBOYS' or simply focus on the four primary kids' tools: And, But, Or, Because!",
+                "mistake": {
+                    "incorrect": "I stayed home but it was raining.",
+                    "correct": "I stayed home because it was raining. ('Because' introduces the actual reason for staying home.)"
+                },
+                "summary": ["Joins Sentences", "And (Plus)", "But (Opposite)", "Because (Reason)"],
+                "questions": [
+                    {"q": "Ali loves chicken rice _____ he eats it every Friday.", "a": ["and", "but", "or", "because"], "c": "and", "e": "'and' joins two positive, related ideas together seamlessly."},
+                    {"q": "Would you like to drink chocolate milk _____ apple juice?", "a": ["or", "and", "but", "so"], "c": "or", "e": "The question presents a choice between two options, so we use 'or'."},
+                    {"q": "He studied hard _____ he failed the grammar test.", "a": ["but", "and", "because", "or"], "c": "but", "e": "Failing after studying hard is a contrast, so we use the opposite connector 'but'."},
+                    {"q": "Siti cried _____ she dropped her ice cream cone.", "a": ["because", "but", "and", "or"], "c": "because", "e": "'because' provides the explanation or cause for why she cried."},
+                    {"q": "It was a hot _____ sunny afternoon in Penang.", "a": ["and", "but", "or", "so"], "c": "and", "e": "'hot' and 'sunny' are matching descriptive conditions, so they are joined by 'and'."},
+                    {"q": "You can go by bus _____ you can walk there.", "a": ["or", "but", "because", "so"], "c": "or", "e": "Provides alternative options for travel methods, hence 'or'."},
+                    {"q": "The knife is sharp _____ be very careful.", "a": ["so", "because", "but", "or"], "c": "so", "e": "'so' introduces the logical result or consequence of the knife being sharp."},
+                    {"q": "I bought a new school bag _____ it was too small.", "a": ["but", "and", "because", "or"], "c": "but", "e": "The size being too small is a disappointing contrast to buying it, so we use 'but'."},
+                    {"q": "We wore raincoats _____ we would not get soaked.", "a": ["so that", "because", "but", "or"], "c": "so that", "e": "'so that' explains the purpose of wearing the protective raincoats."},
+                    {"q": "Muthu is tall, _____ his brother is short.", "a": ["but", "and", "or", "because"], "c": "but", "e": "Compares two directly opposite physical traits, which requires 'but'."}
+                ]
+            },
+            "present_tense": {
+                "title": "Simple Present Tense",
+                "color": "from-blue-500 to-indigo-600",
+                "intro": "We use the Simple Present Tense to talk about facts, habits, or things that happen regularly (every day, every week).",
+                "types": [
+                    {"name": "Singular Subject Rule", "desc": "One person/thing -> Add -s or -es to the verb (He walks, She eats)."},
+                    {"name": "Plural Subject Rule", "desc": "More than one person/thing + 'I' & 'You' -> Do NOT add -s (They walk, I eat)."}
+                ],
+                "examples": ["The sun rises in the east.", "Ali brushes his teeth every single morning.", "We play football every Saturday.", "I live in Malaysia."],
+                "tips": "Singular subjects are lonely, so they need an extra '-s' friend on the verb! Plural subjects already have company, so no '-s'!",
+                "mistake": {
+                    "incorrect": "He go to school every day.",
+                    "correct": "He goes to school every day. ('He' is singular, so the verb 'go' needs '-es' -> 'goes'.)"
+                },
+                "summary": ["Habits & Facts", "Singular + 's'", "Plural = No 's'", "Every day / Always"],
+                "questions": [
+                    {"q": "Ali _____ to school every day.", "a": ["goes", "go", "going", "gone"], "c": "goes", "e": "'Ali' is singular, so the verb needs to take the '-es' suffix in the present tense."},
+                    {"q": "The sun _____ in the morning.", "a": ["shines", "shine", "shining", "shone"], "c": "shines", "e": "The sun is a single nature fact, requiring singular verb form 'shines'."},
+                    {"q": "They _____ rice for lunch every afternoon.", "a": ["eat", "eats", "eating", "ate"], "c": "eat", "e": "'They' is a plural subject, so the verb stays in its base form without 's'."},
+                    {"q": "I _____ my house clean at all times.", "a": ["keep", "keeps", "keeping", "kept"], "c": "keep", "e": "Even though 'I' is one person, it follows the plural rule and takes the base verb 'keep'."},
+                    {"q": "Cows _____ grass for food.", "a": ["eat", "eats", "eating", "ate"], "c": "eat", "e": "'Cows' is plural, so we match it with the base form verb 'eat'."},
+                    {"q": "Siti always _____ her homework before dinner.", "a": ["does", "do", "doing", "did"], "c": "does", "e": "'Siti' is a singular individual, so 'do' becomes 'does'."},
+                    {"q": "We _____ in a beautiful country called Malaysia.", "a": ["live", "lives", "living", "lived"], "c": "live", "e": "'We' is plural, taking the base form present tense verb 'live'."},
+                    {"q": "A mechanic _____ broken cars and engines.", "a": ["fixes", "fix", "fixing", "fixed"], "c": "fixes", "e": "'A mechanic' means one worker, so add '-es' to the verb ending in x."},
+                    {"q": "You _____ very beautifully today.", "a": ["sing", "sings", "singing", "sang"], "c": "sing", "e": "The pronoun 'You' always takes the base form verb 'sing' in the simple present tense."},
+                    {"q": "Cats _____ mice because it's their nature.", "a": ["chase", "chases", "chasing", "chased"], "c": "chase", "e": "'Cats' is plural, so it matches with the base verb 'chase'."}
+                ]
+            },
+            "past_tense": {
+                "title": "Simple Past Tense",
+                "color": "from-amber-500 to-rose-600",
+                "intro": "The Simple Past Tense tells us about actions that are already FINISHED and completed in the past (yesterday, last night, two days ago).",
+                "types": [
+                    {"name": "Regular Verbs", "desc": "Add -ed to the end of the word (walk -> walked, play -> played)."},
+                    {"name": "Irregular Verbs", "desc": "Words that change spelling completely (go -> went, eat -> ate, buy -> bought)."}
+                ],
+                "examples": ["I watched a movie yesterday.", "We went to the beach last weekend.", "Siti ate a delicious plate of mee goreng just now.", "He bought a new book last Monday."],
+                "tips": "Look for past time keywords like 'yesterday', 'last week', 'ago', or 'just now' to know a sentence is in the past tense!",
+                "mistake": {
+                    "incorrect": "Yesterday I go to the market.",
+                    "correct": "Yesterday I went to the market. ('Yesterday' means the action is finished, so 'go' must change to 'went'.)"
+                },
+                "summary": ["Finished Action", "Regular (+ed)", "Irregular (Changes)", "Yesterday / Last"],
+                "questions": [
+                    {"q": "Ahmad _____ a big fish at the river yesterday morning.", "a": ["caught", "catches", "catch", "catching"], "c": "caught", "e": "'yesterday' indicates the past tense, so the irregular verb 'catch' becomes 'caught'."},
+                    {"q": "We _____ football in the field last evening.", "a": ["played", "plays", "play", "playing"], "c": "played", "e": "'last evening' requires the past tense form, so we add '-ed' to make 'played'."},
+                    {"q": "Siti _____ an interesting letter to her grandmother last week.", "a": ["wrote", "writes", "write", "written"], "c": "wrote", "e": "'last week' demands past tense, so irregular verb 'write' changes to 'wrote'."},
+                    {"q": "The baby _____ loudly because he was hungry just now.", "a": ["cried", "cries", "cry", "crying"], "c": "cried", "e": "'just now' signals a recently finished past event. 'cry' changes 'y' to 'i' + 'ed'."},
+                    {"q": "My father _____ a brand new car two days ago.", "a": ["bought", "buys", "buy", "buying"], "c": "bought", "e": "'ago' represents past tense time frame. The past of 'buy' is 'bought'."},
+                    {"q": "I _____ my breakfast at 7 o'clock this morning.", "a": ["ate", "eat", "eats", "eating"], "c": "ate", "e": "'this morning' implies the event has passed, so 'eat' changes to 'ate'."},
+                    {"q": "They _____ to Penang by train last school holidays.", "a": ["travelled", "travel", "travels", "travelling"], "c": "travelled", "e": "'last holidays' denotes completed past, so regular verb takes '-elled' or '-eled'."},
+                    {"q": "The glass fell off the counter and _____ into pieces.", "a": ["broke", "breaks", "break", "broken"], "c": "broke", "e": "The action matches the past tense context of 'fell', so 'break' becomes 'broke'."},
+                    {"q": "She _____ her room completely before going out to play.", "a": ["cleaned", "cleans", "clean", "cleaning"], "c": "cleaned", "e": "Indicates a past sequence completed action, so regular verb adds '-ed'."},
+                    {"q": "We _____ a wonderful song together during music class just now.", "a": ["sang", "sing", "sings", "singing"], "c": "sang", "e": "'just now' marks the past tense. The past tense of 'sing' is 'sang'."}
+                ]
+            },
+            // Load placeholders for topics 11 to 20 to fully satisfy the 20-topic mandate while maintaining modular architecture patterns
+            "future_tense": {
+                "title": "Simple Future Tense",
+                "color": "from-emerald-400 to-cyan-500",
+                "intro": "The Simple Future Tense is used to talk about actions that HAVE NOT happened yet, but WILL happen later (tomorrow, next week, soon).",
+                "types": [
+                    {"name": "Will + Base Verb", "desc": "Put 'will' before the action word without modifying it. (will eat, will go)."}
+                ],
+                "examples": ["I will go to Kuala Lumpur tomorrow.", "They will build a new school next year.", "It will rain soon.", "We will clear the playground this weekend."],
+                "tips": "Always keep the verb after 'will' in its original base shape—never add -s, -ed, or -ing!",
+                "mistake": {
+                    "incorrect": "He will goes tomorrow.",
+                    "correct": "He will go tomorrow. (After 'will', always use the base form verb 'go'.)"
+                },
+                "summary": ["Not Yet Happened", "Will + Base Form", "Tomorrow / Next", "Future Plans"],
+                "questions": [
+                    {"q": "We _____ our grandparents in Malacca next weekend.", "a": ["will visit", "visited", "visits", "visiting"], "c": "will visit", "e": "'next weekend' indicates the future tense, which uses 'will + base verb'."},
+                    {"q": "I think it _____ rain tomorrow afternoon.", "a": ["will", "was", "is", "did"], "c": "will", "e": "'tomorrow' requires the future helper word 'will'."},
+                    {"q": "The school _____ a sports carnival next month.", "a": ["will hold", "held", "holds", "holding"], "c": "will hold", "e": "'next month' represents future scheduling, requiring 'will hold'."},
+                    {"q": "They will _____ to the library later.", "a": ["walk", "walks", "walked", "walking"], "c": "walk", "e": "After the future helper 'will', you must use the pure base form verb 'walk'."},
+                    {"q": "Siti _____ twelve years old next year.", "a": ["will be", "is", "was", "be"], "c": "will be", "e": "For future state of being, we use 'will' followed by the base verb 'be'."},
+                    {"q": "My father _____ me a new bicycle if I pass my exams.", "a": ["will buy", "bought", "buys", "buying"], "c": "will buy", "e": "Promises or conditions looking forward into time use 'will buy'."},
+                    {"q": "The bus _____ arrive at the station soon.", "a": ["will", "is", "did", "has"], "c": "will", "e": "'soon' points out an imminent future event, calling for 'will'."},
+                    {"q": "I will _____ my homework tonight, I promise.", "a": ["do", "does", "did", "done"], "c": "do", "e": "The base form following 'will' is the plain action verb 'do'."},
+                    {"q": "Next Monday, our headmaster _____ the prize winners.", "a": ["will announce", "announces", "announced", "announcing"], "c": "will announce", "e": "'Next Monday' demands future formatting: 'will announce'."},
+                    {"q": "_____ you come to my house tomorrow?", "a": ["Will", "Do", "Are", "Did"], "c": "Will", "e": "Asking about a future action on 'tomorrow' requires starting the question with 'Will'."}
+                ]
+            },
+            "present_continuous": {
+                "title": "Present Continuous Tense",
+                "color": "from-pink-400 to-purple-500",
+                "intro": "This tense describes actions that are HAPPENING RIGHT NOW at this very moment.",
+                "types": [
+                    {"name": "Formula Rule", "desc": "Am / Is / Are + Verb with -ing. Match helper to the subject count."}
+                ],
+                "examples": ["I am typing on the computer.", "Siti is eating an apple right now.", "The children are playing outside.", "Look! The dog is swimming."],
+                "tips": "Look for indicator words like 'now', 'right now', 'at the moment', 'Listen!', or 'Look!'",
+                "mistake": {
+                    "incorrect": "They playing football now.",
+                    "correct": "They are playing football now. (Do not forget the helping verb 'are' before the -ing verb!)"
+                },
+                "summary": ["Happening Now", "Am / Is / Are", "Verb + -ing", "Look! / Listen!"],
+                "questions": [
+                    {"q": "Look! The birds _____ high up in the blue sky.", "a": ["are flying", "is flying", "am flying", "fly"], "c": "are flying", "e": "'Birds' is plural, and 'Look!' means it is happening now, so use 'are flying'."},
+                    {"q": "I _____ my English grammar quiz right now.", "a": ["am doing", "is doing", "are doing", "do"], "c": "am doing", "e": "The pronoun 'I' always pairs with 'am' for ongoing present actions."},
+                    {"q": "Siti _____ a delicious cup of hot chocolate at the moment.", "a": ["is drinking", "are drinking", "am drinking", "drinks"], "c": "is drinking", "e": "'Siti' is a single person, so we use 'is + drinking'."},
+                    {"q": "Listen! Someone _____ at our main wooden gate.", "a": ["is knocking", "are knocking", "knock", "knocked"], "c": "is knocking", "e": "'Someone' is treated as a singular subject, taking 'is knocking'."},
+                    {"q": "The boys _____ very hard for their football match now.", "a": ["are practising", "is practising", "practise", "practised"], "c": "are practising", "e": "Plural subject 'The boys' combined with 'now' dictates 'are practising'."},
+                    {"q": "Why _____ you crying? What happened?", "a": ["are", "is", "am", "do"], "c": "are", "e": "The subject pronoun 'you' always triggers the helper verb 'are'."},
+                    {"q": "My mother _____ dinner in the kitchen right now.", "a": ["is cooking", "are cooking", "cooks", "cooked"], "c": "is cooking", "e": "A singular mother acting right now matches with 'is cooking'."},
+                    {"q": "The baby _____ soundly in her wooden cradle.", "a": ["is sleeping", "are sleeping", "sleeps", "slept"], "c": "is sleeping", "e": "One baby currently resting takes the continuous phrase 'is sleeping'."},
+                    {"q": "We _____ grammar rules together at this moment.", "a": ["are learning", "is learning", "am learning", "learn"], "c": "are learning", "e": "'We' is plural, matching the current ongoing status using 'are learning'."},
+                    {"q": "The dog _____ its tail because it is happy.", "a": ["is wagging", "are wagging", "wags", "wagged"], "c": "is wagging", "e": "A single animal doing an action right now uses 'is wagging'."}
+                ]
+            },
+            "subject_verb_agreement": {
+                "title": "Subject-Verb Agreement",
+                "color": "from-indigo-400 to-blue-500",
+                "intro": "Subjects and verbs must agree! Singular subjects take singular verbs, plural subjects take plural verbs.",
+                "types": [
+                    {"name": "Golden Formula", "desc": "One subject = verb with -s. Many subjects = verb without -s."}
+                ],
+                "examples": ["A boy walks.", "Two boys walk.", "He has a pencil.", "They have pencils."],
+                "tips": "Think of balance. If the subject has no 's', the verb needs the 's'. If the subject has an 's', the verb rests!",
+                "mistake": {
+                    "incorrect": "The children likes toys.",
+                    "correct": "The children like toys. ('children' is plural, so the verb should not have an 's'.)"
+                },
+                "summary": ["Must Match!", "Singular Subject + s", "Plural Subject = no s", "I/You follow plural"],
+                "questions": [
+                    {"q": "Every student _____ to pass the final exam.", "a": ["wants", "want", "wanting", "wants to"], "c": "wants", "e": "'Every' makes the noun singular in grammar, so we use the singular verb 'wants'."},
+                    {"q": "The dogs _____ loudly at the strangers.", "a": ["bark", "barks", "barking", "barked"], "c": "bark", "e": "Plural subject 'dogs' takes the plural verb form 'bark' without an 's'."},
+                    {"q": "My sister _____ a beautiful singing voice.", "a": ["has", "have", "having", "is"], "c": "has", "e": "'My sister' is singular, so she 'has' something, while plurals 'have'."},
+                    {"q": "Ahmad and Raju _____ classmates.", "a": ["are", "is", "am", "was"], "c": "are", "e": "Two people make a plural subject, requiring the present plural verb 'are'."},
+                    {"q": "Either the cat or the kittens _____ spilled the milk.", "a": ["have", "has", "is", "are"], "c": "have", "e": "With 'either/or', the verb agrees with the closer subject. 'kittens' is plural, so use 'have'."},
+                    {"q": "The family _____ dinner together every evening.", "a": ["eats", "eat", "eating", "eaten"], "c": "eats", "e": "'Family' is a singular collective unit here, taking the singular verb 'eats'."},
+                    {"q": "You _____ always helpful to the teachers.", "a": ["are", "is", "am", "be"], "c": "are", "e": "'You' always takes the plural verb form 'are' regardless of actual person count."},
+                    {"q": "The scissors _____ on the sewing table.", "a": ["are", "is", "am", "was"], "c": "are", "e": "'Scissors' is a plural noun tool item, thus requiring the verb 'are'."},
+                    {"q": "He _____ a newspaper every morning.", "a": ["reads", "read", "reading", "to read"], "c": "reads", "e": "'He' is singular, requiring the verb with an 's' suffix -> 'reads'."},
+                    {"q": "Bread and butter _____ my favorite breakfast.", "a": ["is", "are", "am", "were"], "c": "is", "e": "When two items combine to form a single entity or dish, it takes the singular verb 'is'."}
+                ]
+            },
+            "singular_plural": {
+                "title": "Singular and Plural Nouns",
+                "color": "from-teal-400 to-indigo-500",
+                "intro": "Singular means ONE. Plural means MORE THAN ONE. We usually add -s or -es to make plurals.",
+                "types": [
+                    {"name": "Regular Changes", "desc": "book -> books, box -> boxes, city -> cities."},
+                    {"name": "Irregular Changes", "desc": "child -> children, man -> men, tooth -> teeth, sheep -> sheep."}
+                ],
+                "examples": ["I have one apple.", "She has three apples.", "The child is playing.", "All the children are playing."],
+                "tips": "For words ending in -y with a consonant before it, drop the -y and add '-ies' (baby -> babies)!",
+                "mistake": {
+                    "incorrect": "There are many childs here.",
+                    "correct": "There are many children here. (The plural form of 'child' is irregularly 'children'.)"
+                },
+                "summary": ["Singular = 1", "Plural = 2+", "Add -s / -es", "Irregular Forms"],
+                "questions": [
+                    {"q": "What is the plural form of the word 'box'?", "a": ["boxes", "boxs", "boxies", "boxe"], "c": "boxes", "e": "Words ending in -x take '-es' to become plural."},
+                    {"q": "Three _____ flew across the lake.", "a": ["butterflies", "butterflys", "butterflyes", "butterfly"], "c": "butterflies", "e": "Drop the 'y' and add '-ies' because a consonant precedes the 'y'."},
+                    {"q": "Brush your _____ before going to bed.", "a": ["teeth", "tooths", "tootang", "teeths"], "c": "teeth", "e": "The irregular plural form of 'tooth' is 'teeth'. 'Teeths' is incorrect."},
+                    {"q": "The farmer has a large flock of _____.", "a": ["sheep", "sheeps", "sheepes", "shop"], "c": "sheep", "e": "'Sheep' is an irregular noun that stays exactly the same in both singular and plural."},
+                    {"q": "All the _____ in the office were working hard.", "a": ["men", "mans", "mens", "man"], "c": "men", "e": "The plural form of 'man' changes the internal vowel to become 'men'."},
+                    {"q": "Siti cut the cake into two _____.", "a": ["halves", "halfs", "halfes", "halving"], "c": "halves", "e": "Words ending in -f or -fe drop that sound and take '-ves' (half -> halves)."},
+                    {"q": "How many _____ live in this wooden barn?", "a": ["mice", "mouses", "mices", "mouse"], "c": "mice", "e": "The irregular plural form of 'mouse' is 'mice'."},
+                    {"q": "The autumn winds blew the dry _____ off the trees.", "a": ["leaves", "leafs", "leafes", "leaf"], "c": "leaves", "e": "'leaf' ends in f, which drops away to become '-ves' -> 'leaves'."},
+                    {"q": "The small _____ were crying for their milk bottles.", "a": ["babies", "babys", "babyes", "baby"], "c": "babies", "e": "Plural of 'baby' requires dropping the y for '-ies' -> 'babies'."},
+                    {"q": "Which of these words is always plural in form?", "a": ["trousers", "shirt", "shoe", "sock"], "c": "trousers", "e": "'Trousers' (like pants or scissors) has two legs and is treated as plural."}
+                ]
+            },
+            "possessive_nouns": {
+                "title": "Possessive Nouns",
+                "color": "from-amber-400 to-pink-500",
+                "intro": "Possessive nouns show ownership. They tell us WHO owns something by using an apostrophe (').",
+                "types": [
+                    {"name": "Singular Ownership", "desc": "Add 's to a singular noun (Ali's bag)."},
+                    {"name": "Plural Ownership", "desc": "Add only an apostrophe to words ending in s (the boys' football)."}
+                ],
+                "examples": ["This is Ahmad's bicycle.", "The cat's tail is long.", "Those are the students' tables.", "My mother's cooking is the best."],
+                "tips": "Look closely at where the apostrophe is! Singular is before the s ('s). Plural is after the s (s').",
+                "mistake": {
+                    "incorrect": "The dog's are barking.",
+                    "correct": "The dogs are barking. (Do not use an apostrophe for simple plurals! Only use it for ownership.)"
+                },
+                "summary": ["Shows Ownership", "Singular: 's", "Plural ending in s: s'", "Uses Apostrophe"],
+                "questions": [
+                    {"q": "This is _____ textbook. She left it here.", "a": ["Siti's", "Sitis'", "Sitis", "Siti is"], "c": "Siti's", "e": "'Siti' is a single girl, so we add an apostrophe and an s -> 'Siti's'."},
+                    {"q": "The _____ room is clean. (More than one boy shares the room)", "a": ["boys'", "boy's", "boys", "boys's"], "c": "boys'", "e": "For a plural subject ending in s, just add the apostrophe at the very end."},
+                    {"q": "Look at the _____ sharp claws! It is climbing the tree.", "a": ["cat's", "cats'", "cats", "cat"], "c": "cat's", "e": "The phrase 'It is climbing' tells us there is only one cat, so use singular 'cat's'."},
+                    {"q": "My _____ car is parked outside our house.", "a": ["father's", "fathers'", "fathers", "father"], "c": "father's", "e": "Belongs to one father, requiring the singular possessive shape 'father's'."},
+                    {"q": "The _____ nests are high up in the oak branches.", "a": ["birds'", "bird's", "birds", "birds's"], "c": "birds'", "e": "'nests' is plural, indicating multiple birds own them, which uses 'birds''."},
+                    {"q": "The toys belong to the children. They are the _____ toys.", "a": ["children's", "childrens'", "childrens", "child's"], "c": "children's", "e": "'children' is already plural without an s, so it takes a regular ''s' link."},
+                    {"q": "_____ hair is long and beautifully black.", "a": ["Aminah's", "Aminahs'", "Aminah", "Aminahs"], "c": "Aminah's", "e": "Ownership belonging to one girl named Aminah uses 'Aminah's'."},
+                    {"q": "The _____ uniform is white and blue. (Talking about one school student)", "a": ["pupil's", "pupils'", "pupils", "pupil"], "c": "pupil's", "e": "One student means singular possessive layout: 'pupil's'."},
+                    {"q": "We can see the _____ lights shining from the harbor.", "a": ["ships'", "ship's", "ships", "ship"], "c": "ships'", "e": "Multiple ships create lights across the harbor, matching the plural layout 'ships''."},
+                    {"q": "The _____ cover is torn. I need to tape it.", "a": ["book's", "books'", "books", "book"], "c": "book's", "e": "Refers to the cover belonging to one specific book, hence 'book's'."}
+                ]
+            },
+            "possessive_pronouns": {
+                "title": "Possessive Pronouns",
+                "color": "from-purple-400 to-cyan-500",
+                "intro": "These pronouns show ownership without repeating the noun word. They replace possessive phrases.",
+                "types": [
+                    {"name": "Key List", "desc": "mine, yours, his, hers, ours, theirs, its."}
+                ],
+                "examples": ["This pen is mine.", "Is this hat yours?", "The red house is ours.", "The victory was theirs."],
+                "tips": "Possessive pronouns NEVER use an apostrophe! Write 'yours' or 'theirs' without any apostrophe mark!",
+                "mistake": {
+                    "incorrect": "That bicycle is her's.",
+                    "correct": "That bicycle is hers. (Possessive pronouns like 'hers' do not take an apostrophe.)"
+                },
+                "summary": ["Replaces Owner", "Mine / Yours", "His / Hers", "Ours / Theirs"],
+                "questions": [
+                    {"q": "I bought this book. It belongs to me. It is _____.", "a": ["mine", "my", "me", "myself"], "c": "mine", "e": "'mine' stands alone at the end of a sentence to replace 'my book'."},
+                    {"q": "Siti drew this drawing. It is _____.", "a": ["hers", "her", "she", "her's"], "c": "hers", "e": "'hers' replaces the item owned by a female. No apostrophe is allowed."},
+                    {"q": "We built this treehouse together. It is _____.", "a": ["ours", "our", "us", "ours'"], "c": "ours", "e": "'ours' is the possessive pronoun replacing 'our treehouse'."},
+                    {"q": "This is your water bottle, and that one on the desk is _____.", "a": ["mine", "my", "me", "I"], "c": "mine", "e": "Contrasts your bottle with the speaker's bottle -> 'mine'."},
+                    {"q": "The boys won the trophy. The prize is now _____.", "a": ["theirs", "their", "them", "their's"], "c": "theirs", "e": "Belongs to the plural group 'the boys', matching the standalone pronoun 'theirs'."},
+                    {"q": "Ahmad has a red shirt. This shirt must be _____.", "a": ["his", "him", "he", "his's"], "c": "his", "e": "'his' is both the possessive adjective and possessive pronoun form for males."},
+                    {"q": "Excuse me, is this blue pencil case _____?", "a": ["yours", "your", "you", "your's"], "c": "yours", "e": "Asking the listener about ownership uses the pronoun 'yours'."},
+                    {"q": "The cat licked _____ paws until they were clean.", "a": ["its", "it's", "its'", "his"], "c": "its", "e": "'its' is the possessive form showing what belongs to the animal."},
+                    {"q": "They claim that the wandering puppy is _____.", "a": ["theirs", "their", "them", "they"], "c": "theirs", "e": "Stands alone as a pronoun indicating plural group ownership -> 'theirs'."},
+                    {"q": "That ruler belongs to you. It is _____.", "a": ["yours", "your", "you", "yours'"], "c": "yours", "e": "Belongs to you implies the object is 'yours'."}
+                ]
+            },
+            "demonstrative": {
+                "title": "Demonstrative Pronouns",
+                "color": "from-rose-400 to-amber-500",
+                "intro": "These pronouns point out specific things relative to how close or far away they are from the speaker.",
+                "types": [
+                    {"name": "Near Items", "desc": "This (one thing near), These (many things near)."},
+                    {"name": "Far Items", "desc": "That (one thing far), Those (many things far)."}
+                ],
+                "examples": ["This is my pencil in my hand.", "That is an airplane up in the sky.", "These are my toys here on the floor.", "Look at those stars far away!"],
+                "tips": "Check the distance and counts! 'This/These' are here. 'That/Those' are way over there!",
+                "mistake": {
+                    "incorrect": "Those is my book here.",
+                    "correct": "This is my book here. ('is' means one item, and 'here' means it is near, so use 'This'.)"
+                },
+                "summary": ["Points Out", "This (1 Near)", "These (2+ Near)", "That/Those (Far)"],
+                "questions": [
+                    {"q": "_____ is a very heavy book I am holding right now.", "a": ["This", "That", "These", "Those"], "c": "This", "e": "Since the speaker is holding it 'right now', it is near and singular -> 'This'."},
+                    {"q": "Look up! _____ are beautiful stars shining in the night sky.", "a": ["Those", "That", "These", "This"], "c": "Those", "e": "Stars are plural and far away in the sky, which requires 'Those'."},
+                    {"q": "_____ apples here in my basket taste very sweet.", "a": ["These", "This", "Those", "That"], "c": "These", "e": "'apples' is plural and 'here in my basket' indicates proximity -> 'These'."},
+                    {"q": "Can you see that bird flying over _____ distant mountain?", "a": ["that", "this", "these", "those"], "c": "that", "e": "'distant' means far away, and 'mountain' is singular, so we use 'that'."},
+                    {"q": "_____ are my old shoes over there by the front gate.", "a": ["Those", "These", "This", "That"], "c": "Those", "e": "'over there' shows distance, and 'shoes' is plural, matching 'Those'."},
+                    {"q": "Is _____ your pencil lying on the floor over there?", "a": ["that", "this", "these", "those"], "c": "that", "e": "'over there' implies physical distance from the speaker, so use 'that'."},
+                    {"q": "Please take _____ keys from my hand and unlock the door.", "a": ["these", "this", "those", "that"], "c": "these", "e": "Plural keys inside the speaker's hand are close, which calls for 'these'."},
+                    {"q": "_____ was an amazing holiday we had last year.", "a": ["That", "This", "These", "Those"], "c": "That", "e": "A holiday in the past is distant in time, so we refer to it as 'That'."},
+                    {"q": "_____ is my brother standing right next to me.", "a": ["This", "That", "These", "Those"], "c": "This", "e": "'right next to me' means very close by, which matches singular 'This'."},
+                    {"q": "What are _____ items you are pointing at across the river?", "a": ["those", "these", "this", "that"], "c": "those", "e": "'across the river' means far away, and 'items' is plural, requiring 'those'."}
+                ]
+            },
+            "question_words": {
+                "title": "Question Words",
+                "color": "from-teal-400 to-blue-500",
+                "intro": "Question words (Wh-questions) are used at the start of sentences to ask for specific information.",
+                "types": [
+                    {"name": "Core Wh-Words", "desc": "Who (person), What (thing), Where (place), When (time), Why (reason), How (manner/count)."}
+                ],
+                "examples": ["Who is your class teacher?", "What are you eating?", "Where do you live?", "When does the school bell ring?"],
+                "tips": "Look at the answer given! If the answer is a place, the question word must be 'Where'!",
+                "mistake": {
+                    "incorrect": "When is your name?",
+                    "correct": "What is your name? (Use 'What' to ask about information regarding things or names.)"
+                },
+                "summary": ["Who (Person)", "What (Thing)", "Where (Place)", "When (Time)"],
+                "questions": [
+                    {"q": "_____ is that tall man standing near the staffroom?", "a": ["Who", "What", "Where", "Why"], "c": "Who", "e": "The question asks about a person ('tall man'), so we must use 'Who'."},
+                    {"q": "_____ do you live? I live in George Town, Penang.", "a": ["Where", "When", "Who", "What"], "c": "Where", "e": "The answer is a location or place, so the matching question word is 'Where'."},
+                    {"q": "_____ will the school holidays start?", "a": ["When", "Who", "Where", "Why"], "c": "When", "e": "Holidays start at a specific time, so we use the time word 'When'."},
+                    {"q": "_____ are you crying? Because I lost my wallet.", "a": ["Why", "How", "What", "Who"], "c": "Why", "e": "The word 'Because' indicates a reason, meaning the question must start with 'Why'."},
+                    {"q": "_____ many students are there in your classroom?", "a": ["How", "What", "Who", "Where"], "c": "How", "e": "'How many' is the standard combination used to ask about countable numbers."},
+                    {"q": "_____ is your favorite hobby? I love reading.", "a": ["What", "Who", "Where", "When"], "c": "What", "e": "Asks for information regarding a thing or preference, calling for 'What'."},
+                    {"q": "_____ do you spell your long name?", "a": ["How", "What", "Why", "Who"], "c": "How", "e": "Asks for the method or manner of doing an action, so we use 'How'."},
+                    {"q": "_____ did you get this beautiful present from?", "a": ["Who", "Why", "Where", "What"], "c": "Who", "e": "Presents come from people, so we ask 'Who did you get this from?'."},
+                    {"q": "_____ book is this on the floor? Oh, it is Ahmad's.", "a": ["Whose", "Who", "What", "Which"], "c": "Whose", "e": "'Whose' is used to ask about ownership or possession of an item."},
+                    {"q": "_____ path should we choose? The left one or the right one?", "a": ["Which", "Who", "What", "Where"], "c": "Which", "e": "When choosing between a limited set of options, we use 'Which'."}
+                ]
+            },
+            "capital_letters": {
+                "title": "Capital Letters",
+                "color": "from-purple-500 to-amber-500",
+                "intro": "Capital letters are used to mark the absolute start of sentences and special proper names.",
+                "types": [
+                    {"name": "When to Capitalize", "desc": "First word of a sentence, the pronoun 'I', proper nouns (names, days, months, countries)."}
+                ],
+                "examples": ["The school is big.", "My friend Ali lives in Ipoh.", "I am nine years old.", "We celebrate National Day in August."],
+                "tips": "Always check the letter 'I' when it stands alone—it must ALWAYS be capitalized, no matter where it sits!",
+                "mistake": {
+                    "incorrect": "i live in malaysia.",
+                    "correct": "I live in Malaysia. (Capitalize standalone 'I' and the country name 'Malaysia'.)"
+                },
+                "summary": ["Sentence Start", "Pronoun 'I'", "Proper Nouns", "Days & Months"],
+                "questions": [
+                    {"q": "Which sentence is capitalized completely correctly?", "a": ["Siti lives in Malacca.", "siti lives in malacca.", "Siti lives in malacca.", "Siti Lives In Malacca."], "c": "Siti lives in Malacca.", "e": "Capitalize the first word name 'Siti' and the proper state name 'Malacca'."},
+                    {"q": "Identify the word that needs a capital letter: 'We will visit our uncle next monday.'", "a": ["monday", "visit", "uncle", "next"], "c": "monday", "e": "Days of the week (like 'Monday') are proper nouns and must be capitalized."},
+                    {"q": "Every year, _____ celebrate my birthday in the month of June.", "a": ["I", "i", "me", "my"], "c": "I", "e": "The single letter pronoun 'I' must always be a capital letter."},
+                    {"q": "Which word in this list is a proper noun that requires a capital letter?", "a": ["malaysia", "country", "state", "island"], "c": "malaysia", "e": "'malaysia' is the specific name of a country, so it must start with a capital M."},
+                    {"q": "Choose the correct formatting: '_____ is the capital city of Malaysia.'", "a": ["Kuala Lumpur", "kuala lumpur", "Kuala lumpur", "Kuala Lumpur"], "c": "Kuala Lumpur", "e": "Both parts of this proper city name require capital letters: 'Kuala Lumpur'."},
+                    {"q": "What is the rule for starting any new sentence?", "a": ["Always use a capital letter", "Always use a small letter", "Use underlines", "No rules exist"], "c": "Always use a capital letter", "e": "The very first word of every new sentence must always start with a capital letter."},
+                    {"q": "Correct this phrase: 'on sundays we go swimming.'", "a": ["On Sundays we go swimming.", "on sundays We go swimming.", "On sundays we go swimming.", "On Sundays We Go Swimming."], "c": "On Sundays we go swimming.", "e": "Capitalize the start 'On' and the day name 'Sundays'. Normal verbs like swimming stay lowercase."},
+                    {"q": "Which month is written correctly?", "a": ["February", "february", "february", "FebRuary"], "c": "February", "e": "Months of the year are proper nouns and require a starting capital letter."},
+                    {"q": "Ahmad and _____ are working on a group project.", "a": ["I", "i", "me", "us"], "c": "I", "e": "The pronoun representing the speaker as a subject must be capital 'I'."},
+                    {"q": "Identify the error: 'The teacher said that London is a big city.'", "a": ["No error", "teacher needs capital", "London needs small letter", "city needs capital"], "c": "No error", "e": "The sentence is already perfectly capitalized ('The' at start, 'London' capitalized proper noun)."}
+                ]
+            },
+            "punctuation": {
+                "title": "Punctuation",
+                "color": "from-rose-500 to-indigo-600",
+                "intro": "Punctuation marks are symbols that help us read sentences clearly. They tell us when to stop, pause, or show excitement.",
+                "types": [
+                    {"name": "Full Stop (.)", "desc": "Ends a telling sentence."},
+                    {"name": "Question Mark (?)", "desc": "Ends an asking sentence."},
+                    {"name": "Comma (,)", "desc": "Creates a pause or separates items in a list."},
+                    {"name": "Exclamation Mark (!)", "desc": "Shows excitement, surprise, or loud volume."}
+                ],
+                "examples": ["The dog is barking.", "Where is my blue pen?", "I bought an apple, a pear, and a mango.", "Wow! That is amazing!"],
+                "tips": "If a sentence asks a question, always end it with a question mark (?) instead of a full stop (.)!",
+                "mistake": {
+                    "incorrect": "Where are you going.",
+                    "correct": "Where are you going? (This is an asking question, so it must end with a question mark.)"
+                },
+                "summary": ["Full Stop (.)", "Question Mark (?)", "Comma (,)", "Exclamation (!)"],
+                "questions": [
+                    {"q": "What punctuation mark is missing: 'Help me, my cat is stuck up the tree_____'", "a": ["!", "?", ",", ";"], "c": "!", "e": "An emergency cry for help involves strong feeling and excitement, calling for an exclamation mark (!)."},
+                    {"q": "Choose the correctly punctuated sentence.", "a": ["I like to eat noodles, rice, and burgers.", "I like to eat noodles rice and burgers.", "I like to eat noodles, rice and burgers?", "i like to eat noodles rice, and burgers."], "c": "I like to eat noodles, rice, and burgers.", "e": "Commas separate items in a list, and a full stop ends the declarative statement cleanly."},
+                    {"q": "What mark ends this sentence: 'How do you make an omelet_____'", "a": ["?", ".", "!", ","], "c": "?", "e": "This starts with 'How' and is asking a question, so it requires a question mark (?)."},
+                    {"q": "We bought pens_____ pencils and rulers from the bookshop.", "a": [",", ".", "?", "!"], "c": ",", "e": "Use a comma to separate the first two items listed in a series."},
+                    {"q": "_____Ouch_____ That needle hurt my finger!'", "a": ["' / !'", "\" / ?\"", ". / .", "! / !"], "c": "' / !'", "e": "'Ouch' expresses sudden pain, which requires an exclamation mark (!)."},
+                    {"q": "Which sentence uses a question mark correctly?", "a": ["Are you coming to school tomorrow?", "I am going to school tomorrow?", "Wow tomorrow is school?", "Please go to school tomorrow?"], "c": "Are you coming to school tomorrow?", "e": "Only the first option is a true question inquiring for an answer."},
+                    {"q": "The match ended in a draw_____ Everyone went home.", "a": [".", ",", "?", "!"], "c": ".", "e": "The independent thought is finished, requiring a full stop (.) before starting the next sentence."},
+                    {"q": "What punctuation mark is used to show someone is speaking?", "a": ["Quotation marks (\"\")", "Apostrophe (')", "Comma (,)", "Hyphen (-)"], "c": "Quotation marks (\"\")", "e": "Speech bubbles or dialogue words are enclosed within quotation marks (\"\")."},
+                    {"q": "Choose the sentence that shows surprise correctly.", "a": ["What a beautiful castle!", "What a beautiful castle?", "What a beautiful castle.", "What a beautiful castle,"], "c": "What a beautiful castle!", "e": "An exclamation of admiration expressing awe requires an exclamation mark (!)."},
+                    {"q": "Punctuate the end: 'My favorite color is green____'", "a": [".", "?", "!", ","], "c": ".", "e": "A basic statement of fact ends with a standard full stop punctuation mark (.)"}
+                ]
+            }
+        };
+
+        const topicKeyList = Object.keys(grammarDatabase);
+
+        /=======================================================================
+         * 2. STATE VARIABLE MANAGEMENT SYSTEM FOR THE RUNTIME ACTIVE SESSION
+         *======================================================================/
+        let sessionState = {
+            studentName: "",
+            currentScreen: "Welcome",
+            selectedTopicKey: "",
+            completedTopics: {}, // Tracks scores per key {"nouns": 90}
+            totalStarsEarned: 0
+        };
+
+        let quizState = {
+            questionsList: [],
+            currentIndex: 0,
+            userAnswers: {}, // key: question index, value: user chosen option string
+            isAnswered: {},  // key: question index, value: boolean tracking feedback exposure
+            correctCount: 0
+        };
+
+        /=======================================================================
+         * 3. INITIALIZATION & ROUTING UTILITIES
+         *======================================================================/
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderTopicsGrid();
         });
-    }
 
-    function loadLesson(topic) {
-        state.currentTopic = topic;
-        document.getElementById('lesson-title').innerText = topic;
-        document.getElementById('lesson-content').innerHTML = `<p>${data[topic].lesson}</p>`;
-        showScreen('lesson-screen');
-    }
+        function navigateTo(screenId) {
+            // Guardrail restriction: Block access to app screens if name is blank
+            if (!sessionState.studentName && screenId !== "Welcome") {
+                navigateTo("Welcome");
+                return;
+            }
 
-    function showScreen(id) {
-        ['login-screen', 'home-screen', 'lesson-screen', 'quiz-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        document.getElementById('nav-bar').classList.remove('hidden');
-    }
+            // Hide all screen element wrappers
+            const screens = ['Welcome', 'Topics', 'Lesson', 'Quiz', 'Result', 'Progress', 'About'];
+            screens.forEach(s => {
+                const element = document.getElementById(`screen${s}`);
+                if (element) element.classList.add('hidden');
+            });
 
-    function startQuiz() {
-        state.currentQ = 0;
-        state.score = 0;
-        showScreen('quiz-screen');
-        renderQuestion();
-    }
+            // Unveil the targeted viewport component
+            const targetScreen = document.getElementById(`screen${screenId}`);
+            if (targetScreen) targetScreen.classList.remove('hidden');
 
-    function renderQuestion() {
-        const q = data[state.currentTopic].questions[state.currentQ];
-        document.getElementById('quiz-progress').innerText = `Question ${state.currentQ + 1} of ${data[state.currentTopic].questions.length}`;
-        document.getElementById('question-text').innerText = q.q;
-        const opts = document.getElementById('options-container');
-        opts.innerHTML = '';
-        q.a.forEach((opt, i) => {
-            opts.innerHTML += `<button onclick="checkAnswer(${i})">${opt}</button><br><br>`;
-        });
-    }
-
-    function checkAnswer(i) {
-        const q = data[state.currentTopic].questions[state.currentQ];
-        if (i === q.correct) {
-            state.score++;
-            document.getElementById('feedback').innerHTML = `<p style="color:green">✅ Correct! ${q.exp}</p>`;
-        } else {
-            document.getElementById('feedback').innerHTML = `<p style="color:red">❌ Incorrect. The correct answer was ${q.a[q.correct]}.</p>`;
+            sessionState.currentScreen = screenId;
+            updateNavigationHighlight(screenId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        setTimeout(() => {
-            state.currentQ++;
-            if (state.currentQ < data[state.currentTopic].questions.length) renderQuestion();
-            else alert(`Quiz Finished! Your score: ${state.score}`);
-        }, 2000);
-    }
-</script>
+
+        function updateNavigationHighlight(screenId) {
+            const tabs = ['Topics', 'Progress', 'About'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`navLink${t}`);
+                if (!btn) return;
+                if (t === screenId || (t === 'Topics' && (screenId === 'Lesson' || screenId === 'Quiz' || screenId === 'Result'))) {
+                    btn.classList.remove('text-slate-400', 'hover:text-slate-600');
+                    btn.classList.add('text-brand-purple', 'scale-105');
+                } else {
+                    btn.classList.remove('text-brand-purple', 'scale-105');
+                    btn.classList.add('text-slate-400', 'hover:text-slate-600');
+                }
+            });
+        }
+
+        /=======================================================================
+         * 4. REGISTRATION & SCREEN WELCOME ACTIONS
+         *======================================================================/
+        function handleStartLearning() {
+            const nameInput = document.getElementById('studentNameInput');
+            const trimmedName = nameInput.value.trim();
+
+            if (!trimmedName) {
+                alert("Please type your name first to start the fun learning adventure!");
+                nameInput.focus();
+                return;
+            }
+
+            // Set state variables values mapping globally
+            sessionState.studentName = trimmedName;
+            
+            // Sync with dynamic template views text bindings
+            document.getElementById('headerStudentName').textContent = trimmedName;
+            document.getElementById('welcomeStudentName').textContent = trimmedName;
+
+            // Unveil top and bottom bars headers
+            document.getElementById('appHeader').classList.remove('hidden');
+            document.getElementById('appNavBar').classList.remove('hidden');
+
+            navigateTo("Topics");
+        }
+
+        /=======================================================================
+         * 5. GRID GENERATION AND CARD DRAW METHODS
+         *======================================================================/
+        function renderTopicsGrid() {
+            const grid = document.getElementById('topicsGrid');
+            grid.innerHTML = "";
+
+            topicKeyList.forEach((key, index) => {
+                const topic = grammarDatabase[key];
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer flex flex-col justify-between space-y-3 relative overflow-hidden group";
+                
+                // Track complete statuses tags
+                const isDone = sessionState.completedTopics[key] !== undefined;
+                const score = isDone ? sessionState.completedTopics[key] : 0;
+                
+                let badgeHtml = `<span class="bg-slate-100 text-slate-500 font-bold text-[11px] px-2.5 py-0.5 rounded-full w-max">Topic ${index + 1}</span>`;
+                if (isDone) {
+                    badgeHtml = `<span class="bg-emerald-100 text-emerald-700 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full flex items-center space-x-1 w-max">
+                        <i data-lucide="check-circle" class="w-3 h-3"></i> <span>Score: ${score}/10</span>
+                    </span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-start">
+                            ${badgeHtml}
+                        </div>
+                        <h4 class="heading-font text-lg text-slate-800 pt-1 group-hover:text-brand-purple transition-colors">${topic.title}</h4>
+                        <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed font-medium">${topic.intro}</p>
+                    </div>
+                    <div class="pt-2 flex justify-end">
+                        <button onclick="openLessonPage('${key}')" class="bg-slate-50 group-hover:bg-brand-purple group-hover:text-white text-slate-600 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1">
+                            <span>Study Lesson</span>
+                            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Wire click handler safely onto structural components
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        openLessonPage(key);
+                    }
+                });
+
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        /=======================================================================
+         * 6. LESSON VIEW MODULE PROCESSORS
+         *======================================================================/
+        function openLessonPage(topicKey) {
+            const topic = grammarDatabase[topicKey];
+            if (!topic) return;
+
+            sessionState.selectedTopicKey = topicKey;
+
+            // Paint dynamic textual items inside fields template
+            document.getElementById('lessonTopicTitle').textContent = topic.title;
+            document.getElementById('lessonIntroduction').textContent = topic.intro;
+            document.getElementById('lessonTips').textContent = topic.tips;
+            document.getElementById('lessonMistakeIncorrect').textContent = topic.mistake.incorrect;
+            document.getElementById('lessonMistakeCorrect').textContent = topic.mistake.correct;
+
+            // Apply color dynamic styling sets
+            const headerBanner = document.getElementById('lessonHeaderBanner');
+            headerBanner.className = `p-6 text-white bg-gradient-to-r ${topic.color}`;
+
+            // Populate Subcategories Types structural segments if applicable
+            const typesContainer = document.getElementById('lessonTypesContainer');
+            const typesGrid = document.getElementById('lessonTypes');
+            typesGrid.innerHTML = "";
+            if (topic.types && topic.types.length > 0) {
+                typesContainer.classList.remove('hidden');
+                topic.types.forEach(t => {
+                    const item = document.createElement('div');
+                    item.className = "bg-slate-50 p-3 rounded-xl border border-slate-100";
+                    item.innerHTML = `<p class="font-bold text-slate-700 text-sm">${t.name}</p><p class="text-xs text-slate-500 mt-0.5 leading-relaxed">${t.desc}</p>`;
+                    typesGrid.appendChild(item);
+                });
+            } else {
+                typesContainer.classList.add('hidden');
+            }
+
+            // Populate Easy Examples
+            const examplesUl = document.getElementById('lessonExamples');
+            examplesUl.innerHTML = "";
+            topic.examples.forEach(ex => {
+                const li = document.createElement('li');
+                li.className = "bg-sky-50/70 text-slate-700 text-sm px-4 py-3 rounded-xl border border-sky-100/50 flex items-center space-x-2 font-medium";
+                li.innerHTML = `<i data-lucide="dot" class="text-brand-blue w-6 h-6 shrink-0"></i> <span>${ex}</span>`;
+                examplesUl.appendChild(li);
+            });
+
+            // Populate Quick Summary Checkboxes items
+            const summaryTitle = document.getElementById('summaryTitle');
+            summaryTitle.innerHTML = `<i data-lucide="clipboard-list" class="w-5 h-5 text-emerald-600"></i> <span class="text-emerald-800 font-bold">${topic.title} Checklist</span>`;
+            
+            const summaryBox = document.getElementById('lessonSummaryItems');
+            summaryBox.innerHTML = "";
+            topic.summary.forEach(sumItem => {
+                const badge = document.createElement('div');
+                badge.className = "bg-white border border-emerald-200 text-emerald-700 px-3 py-2 rounded-xl text-xs font-bold flex items-center space-x-1.5 shadow-sm";
+                badge.innerHTML = `<i data-lucide="check" class="text-emerald-500 w-4 h-4 shrink-0"></i> <span class="truncate">${sumItem}</span>`;
+                summaryBox.appendChild(badge);
+            });
+
+            lucide.createIcons();
+            navigateTo("Lesson");
+        }
+
+        /=======================================================================
+         * 7. QUIZ MODULE ENGINE PROCESSORS (SHUFFLING, BINDINGS, ACTIONS)
+         *======================================================================/
+        function startQuizModule() {
+            const topic = grammarDatabase[sessionState.selectedTopicKey];
+            if (!topic || !topic.questions) return;
+
+            // Reset engine status fields
+            quizState.currentIndex = 0;
+            quizState.userAnswers = {};
+            quizState.isAnswered = {};
+            quizState.correctCount = 0;
+            document.getElementById('quizTopicTitle').textContent = topic.title;
+
+            // Deep clone and shuffle the database questions array completely
+            let originalQuestions = [...topic.questions];
+            quizState.questionsList = shuffleArray(originalQuestions).map(qItem => {
+                // For each individual question block, shuffle the choices options array too
+                let choices = [...qItem.a];
+                return {
+                    questionText: qItem.q,
+                    shuffledChoices: shuffleArray(choices),
+                    correctAnswer: qItem.c,
+                    explanation: qItem.e
+                };
+            });
+
+            renderQuizQuestion();
+            navigateTo("Quiz");
+        }
+
+        // Knuth / Fisher-Yates array shuffling math algorithm script
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuizQuestion() {
+            const idx = quizState.currentIndex;
+            const q = quizState.questionsList[idx];
+            if (!q) return;
+
+            // Update Header HUD progress items
+            document.getElementById('quizProgressCounter').textContent = `Question ${idx + 1} of 10`;
+            const percentWidth = ((idx + 1) / 10) * 100;
+            document.getElementById('quizProgressBar').style.width = `${percentWidth}%`;
+
+            // Draw Question body string lines
+            document.getElementById('quizQuestionText').innerHTML = q.questionText;
+
+            // Paint choices options grid elements items list
+            const optionsGrid = document.getElementById('quizOptionsGrid');
+            optionsGrid.innerHTML = "";
+
+            const chosenAnswer = quizState.userAnswers[idx];
+            const hasBeenAnswered = quizState.isAnswered[idx] === true;
+
+            q.shuffledChoices.forEach((choice, cIdx) => {
+                const letter = String.fromCharCode(65 + cIdx); // Generates A, B, C, D labels
+                const button = document.createElement('button');
+                
+                // Base structure layout classes setups
+                button.className = "w-full text-left px-5 py-4 rounded-2xl border-2 font-bold text-base transition-all flex items-center justify-between group active:scale-[0.99]";
+                button.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="bg-slate-100 text-slate-500 w-7 h-7 rounded-lg flex items-center justify-center text-xs border border-slate-200 group-hover:bg-brand-purple group-hover:text-white transition-colors uppercase">${letter}</span>
+                        <span class="text-slate-700 font-semibold">${choice}</span>
+                    </div>
+                    <div class="option-icon-slot"></div>
+                `;
+
+                // Design conditional interactive states based on historical selection status
+                if (!hasBeenAnswered) {
+                    // Quiz question is fresh and waiting response action
+                    button.classList.add('border-slate-200', 'bg-white', 'hover:border-brand-purple', 'hover:bg-purple-50/20');
+                    button.onclick = () => handleSelectAnswer(choice);
+                } else {
+                    // Question has already been locked in and graded
+                    button.disabled = true;
+                    button.classList.remove('active:scale-[0.99]');
+
+                    if (choice === q.correctAnswer) {
+                        // Mark target correct green choice layout properties explicitly
+                        button.classList.add('border-emerald-500', 'bg-emerald-50 text-emerald-900');
+                        button.querySelector('.option-icon-slot').innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 fill-emerald-100"></i>`;
+                    } else if (choice === chosenAnswer && chosenAnswer !== q.correctAnswer) {
+                        // Mark targeted wrong crimson items properties layout strictly
+                        button.classList.add('border-rose-400', 'bg-rose-50 text-rose-900');
+                        button.querySelector('.option-icon-slot').innerHTML = `<i data-lucide="x-circle" class="w-5 h-5 text-rose-500 fill-rose-100"></i>`;
+                    } else {
+                        // Untouched wrong options during grading
+                        button.classList.add('border-slate-100', 'bg-slate-50/50', 'opacity-60');
+                    }
+                }
+
+                optionsGrid.appendChild(button);
+            });
+
+            // Display or hide the active persistent feedback panel
+            const feedbackPanel = document.getElementById('quizFeedbackPanel');
+            if (hasBeenAnswered) {
+                feedbackPanel.classList.remove('hidden');
+                const isUserCorrect = chosenAnswer === q.correctAnswer;
+                
+                const iconBox = document.getElementById('quizFeedbackIconBox');
+                const icon = document.getElementById('quizFeedbackIcon');
+                const statusText = document.getElementById('quizFeedbackStatusText');
+                const explanation = document.getElementById('quizFeedbackExplanation');
+
+                explanation.textContent = q.explanation;
+
+                if (isUserCorrect) {
+                    feedbackPanel.className = "rounded-2xl p-5 border border-emerald-200 bg-emerald-50/50 text-emerald-900 animate-bounce-short";
+                    iconBox.className = "p-2 rounded-xl bg-emerald-500 text-white shrink-0";
+                    icon.setAttribute('data-lucide', 'check');
+                    statusText.textContent = "✅ Correct!";
+                } else {
+                    feedbackPanel.className = "rounded-2xl p-5 border border-rose-200 bg-rose-50/50 text-rose-900";
+                    iconBox.className = "p-2 rounded-xl bg-rose-500 text-white shrink-0";
+                    icon.setAttribute('data-lucide', 'x');
+                    statusText.textContent = `❌ Incorrect. (Correct Answer: ${q.correctAnswer})`;
+                }
+            } else {
+                feedbackPanel.classList.add('hidden');
+            }
+
+            // Sync structural parameters on buttons blocks footer row navigation actions
+            const btnPrev = document.getElementById('btnPrevQuestion');
+            btnPrev.disabled = (idx === 0);
+
+            const btnNext = document.getElementById('btnNextQuestion');
+            const btnNextText = document.getElementById('btnNextText');
+            const btnNextIcon = document.getElementById('btnNextIcon');
+
+            // If question isn't answered yet, freeze/disable Next until student locks in choice
+            btnNext.disabled = !hasBeenAnswered;
+
+            if (idx === 9) {
+                btnNextText.textContent = "Finish Quiz";
+                btnNextIcon.setAttribute('data-lucide', 'award');
+            } else {
+                btnNextText.textContent = "Next Question";
+                btnNextIcon.setAttribute('data-lucide', 'chevron-right');
+            }
+
+            lucide.createIcons();
+        }
+
+        function handleSelectAnswer(selectedChoice) {
+            const idx = quizState.currentIndex;
+            
+            // Record choice parameters into global tracking tables mappings
+            quizState.userAnswers[idx] = selectedChoice;
+            quizState.isAnswered[idx] = true;
+
+            const currentQuestion = quizState.questionsList[idx];
+            if (selectedChoice === currentQuestion.correctAnswer) {
+                quizState.correctCount++;
+            }
+
+            // Immediately redraw interface elements viewport blocks to apply feedback
+            renderQuizQuestion();
+        }
+
+        function navigateQuizQuestion(step) {
+            const targetIndex = quizState.currentIndex + step;
+
+            if (targetIndex >= 0 && targetIndex < 10) {
+                quizState.currentIndex = targetIndex;
+                renderQuizQuestion();
+            } else if (targetIndex === 10) {
+                // Out-of-bounds trigger representing end of quiz, package scoring results
+                compileQuizResults();
+            }
+        }
+
+        /=======================================================================
+         * 8. COMPILATION AND RESULTS MODULE COMPUTATION INTERFACES
+         *======================================================================/
+        function compileQuizResults() {
+            const finalScore = quizState.correctCount;
+            const percentage = Math.round((finalScore / 10) * 100);
+            const topicKey = sessionState.selectedTopicKey;
+            const topicTitle = grammarDatabase[topicKey].title;
+
+            // 1. Calculate and map metrics outputs values into the Session State tables
+            // Only update historical session stats if current score surpasses old score
+            const previousBest = sessionState.completedTopics[topicKey] || 0;
+            if (finalScore >= previousBest) {
+                sessionState.completedTopics[topicKey] = finalScore;
+            }
+
+            // 2. Determine star awards thresholds criteria parameters maps
+            let starsString = "";
+            let perfMessage = "";
+            if (percentage >= 90) {
+                starsString = "⭐⭐⭐";
+                perfMessage = "Excellent Work! 🌟";
+            } else if (percentage >= 70) {
+                starsString = "⭐⭐";
+                perfMessage = "Great Job! 👍";
+            } else if (percentage >= 50) {
+                starsString = "⭐";
+                perfMessage = "Keep Practising! 📚";
+            } else {
+                starsString = " Keep Practising";
+                perfMessage = "Don't Give Up! Try Again! 💪";
+            }
+
+            // 3. Inject parameters mapping strings into the Results cards fields text contents
+            document.getElementById('resultPerformanceMsg').textContent = perfMessage;
+            document.getElementById('resultStudentName').textContent = sessionState.studentName;
+            document.getElementById('resultTopicName').textContent = topicTitle;
+            document.getElementById('resultRawScore').textContent = finalScore;
+            document.getElementById('resultPercentage').textContent = `${percentage}%`;
+            document.getElementById('resultCorrectCount').textContent = finalScore;
+            document.getElementById('resultIncorrectCount').textContent = (10 - finalScore);
+
+            const starsBox = document.getElementById('resultStarsBox');
+            if (percentage >= 50) {
+                starsBox.className = "flex justify-center items-center space-x-2 py-2 text-3xl transform scale-110 duration-500 animate-pulse";
+                starsBox.textContent = starsString;
+            } else {
+                starsBox.className = "inline-flex bg-rose-50 text-rose-700 font-bold px-4 py-2 rounded-xl text-sm border border-rose-200 mt-2";
+                starsBox.textContent = starsString;
+            }
+
+            // Recalculate full summary header global aggregates fields scores mappings
+            recalculateAggregateStars();
+            
+            // Re-render baseline topics elements cards views blocks mapping to display new scores badges
+            renderTopicsGrid();
+
+            // Redirect context view window viewport strictly inside target path
+            navigateTo("Result");
+        }
+
+        function recalculateAggregateStars() {
+            let totalStars = 0;
+            let totalScorePoints = 0;
+            let totalTopicsCompletedCount = 0;
+
+            const keysArr = Object.keys(sessionState.completedTopics);
+            keysArr.forEach(k => {
+                const rawScore = sessionState.completedTopics[k];
+                const pct = (rawScore / 10) * 100;
+                totalTopicsCompletedCount++;
+                totalScorePoints += pct;
+
+                if (pct >= 90) totalStars += 3;
+                else if (pct >= 70) totalStars += 2;
+                else if (pct >= 50) totalStars += 1;
+            });
+
+            sessionState.totalStarsEarned = totalStars;
+            document.getElementById('headerStars').textContent = totalStars;
+
+            // Also synchronize stats bindings indicators inside Dashboard Panel View
+            document.getElementById('progressStatCompleted').textContent = totalTopicsCompletedCount;
+            document.getElementById('progressStatStars').textContent = totalStars;
+            
+            const avgPct = totalTopicsCompletedCount > 0 ? Math.round(totalScorePoints / totalTopicsCompletedCount) : 0;
+            document.getElementById('progressStatAvg').textContent = `${avgPct}%`;
+
+            // Redraw dynamic tables layout records maps inside historical progress viewports
+            renderProgressLogsTable();
+        }
+
+        function retryCurrentTopic() {
+            if (sessionState.selectedTopicKey) {
+                openLessonPage(sessionState.selectedTopicKey);
+            }
+        }
+
+        /=======================================================================
+         * 9. PROGRESS VIEW AND DYNAMIC HISTORICAL DATA RENDERING
+         *======================================================================/
+        function renderProgressLogsTable() {
+            const container = document.getElementById('progressLogContainer');
+            container.innerHTML = "";
+
+            const completedKeys = Object.keys(sessionState.completedTopics);
+            if (completedKeys.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-slate-400 space-y-2">
+                        <i data-lucide="history" class="w-8 h-8 mx-auto opacity-50"></i>
+                        <p class="text-sm font-medium">No topics finished yet. Start learning to track scores!</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            completedKeys.forEach(key => {
+                const title = grammarDatabase[key].title;
+                const score = sessionState.completedTopics[key];
+                const pct = (score / 10) * 100;
+                
+                let stars = "Keep Practising";
+                if (pct >= 90) stars = "⭐⭐⭐";
+                else if (pct >= 70) stars = "⭐⭐";
+                else if (pct >= 50) stars = "⭐";
+
+                const logRow = document.createElement('div');
+                logRow.className = "px-5 py-3.5 flex justify-between items-center text-sm font-medium hover:bg-slate-50/80 transition-colors";
+                logRow.innerHTML = `
+                    <div class="space-y-0.5">
+                        <p class="text-slate-800 font-bold">${title}</p>
+                        <p class="text-xs text-slate-400 font-semibold">${stars}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-base font-extrabold text-brand-purple">${score} / 10</span>
+                        <span class="text-[11px] text-slate-400 block font-bold">${pct}%</span>
+                    </div>
+                `;
+                container.appendChild(logRow);
+            });
+            lucide.createIcons();
+        }
+    </script>
 </body>
 </html>
