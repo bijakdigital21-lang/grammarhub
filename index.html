@@ -662,6 +662,58 @@
             box-shadow: none;
         }
 
+        /* BUILD THE SENTENCE STYLES */
+        .sentence-drop-area {
+            min-height: 80px;
+            border: 3px dashed var(--primary-purple);
+            border-radius: 15px;
+            background: #F9F6FF;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            margin: 20px 0;
+        }
+
+        .word-chip {
+            background-color: var(--primary-yellow);
+            border: 3px solid #C2A332;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: grab;
+            box-shadow: 0 3px 0 #C2A332;
+            user-select: none;
+            display: inline-block;
+        }
+
+        .word-chip:active {
+            cursor: grabbing;
+        }
+
+        .word-chip.used {
+            opacity: 0.3;
+            pointer-events: none;
+            background: #DDD;
+            border-color: #AAA;
+            box-shadow: none;
+        }
+
+        .correct-answer-box {
+            background: #E8F5E9;
+            border: 2px solid #4CAF50;
+            color: #2E7D32;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -798,6 +850,7 @@
                     <button class="topic-btn" onclick="playClickSound(); openLesson('singularPlural')">Singular & Plural 👥</button>
                     <button class="topic-btn" onclick="playClickSound(); openLesson('demonstratives')">This, That, These, Those 👉</button>
                     <button class="topic-btn" onclick="playClickSound(); openLesson('spelling')">Spelling ✍️</button>
+                    <button class="topic-btn" onclick="playClickSound(); openLesson('buildSentence')">Build Sentence 🧩</button>
                 </div>
             </div>
 
@@ -934,6 +987,32 @@
                 </div>
             </div>
 
+            <!-- 7C. BUILD THE SENTENCE QUIZ SCREEN -->
+            <div id="sentence-quiz-screen" class="card">
+                <div class="quiz-header">
+                    <span>BUILD THE SENTENCE</span>
+                    <span>Question: <span id="sentence-question-num">1</span>/<span id="sentence-total-q-num">10</span></span>
+                    <span>Score: <span id="sentence-current-score">0</span></span>
+                </div>
+
+                <p style="font-weight: 700; color: #555; margin-bottom: 5px;">Drag or tap words below to arrange the correct sentence:</p>
+
+                <!-- Tempat Susunan Ayat -->
+                <div id="sentence-drop-area" class="sentence-drop-area"></div>
+
+                <!-- Pilihan Perkataan Secara Rawak -->
+                <div id="sentence-word-bank" class="bank-container"></div>
+
+                <!-- Paparan Jawapan Betul Jika Salah -->
+                <div id="sentence-correct-answer" class="correct-answer-box"></div>
+
+                <div class="quiz-action-container" style="margin-top: 15px;">
+                    <button id="sentence-check-btn" class="action-btn" style="background-color: var(--primary-green); box-shadow: 0 4px 0 #5aa33d;" onclick="playClickSound(); checkSentenceAnswer()">Check Answer ✔️</button>
+                    <button id="sentence-next-btn" class="action-btn" style="display:none;" onclick="playClickSound(); nextSentenceQuestion()">Next Question ➔</button>
+                    <button class="action-btn home-btn" onclick="playClickSound(); confirmBackToHome()">Home 🏠</button>
+                </div>
+            </div>
+
             <!-- 8. RESULT SCREEN -->
             <div id="result-screen" class="card">
                 <h2>Awesome Job! 🎉</h2>
@@ -979,7 +1058,6 @@
             messagingSenderId: "890026579019",
             appId: "1:890026579019:web:200fd135537b9ea2f7a9ce"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
@@ -1345,11 +1423,16 @@
                 title: "Spelling Challenge",
                 desc: "<strong>Spelling</strong> helps you write words correctly! Look at the picture, listen to the audio pronunciation, and drag or tap the letters into the correct boxes to spell the word.",
                 examples: "<ul><li>Example: Picture of a cat ➔ Listen to 'CAT' ➔ Arrange letters <b>C - A - T</b>.</li></ul>"
+            },
+            buildSentence: {
+                title: "Build the Sentence",
+                desc: "<strong>Build the Sentence</strong> teaches you how to construct correct English sentences. Drag or tap the scrambled words to arrange them into a meaningful sentence.",
+                examples: "<ul><li>Scrambled: <i>cat / The / sleeping / is</i></li><li>Correct: <b>The cat is sleeping.</b></li></ul>"
             }
         };
 
         const questionBank = {
- nouns: [
+            nouns: [
     { q: "My father drives a new ________ to work.", options: ["caring", "car", "cared", "cars"], answer: 1 },
     { q: "There are three ________ in the cage.", options: ["bird", "birds", "birding", "birded"], answer: 1 },
     { q: "Encik Ahmad is a hardworking ________.", options: ["teaching", "teacher", "taught", "teachers"], answer: 1 },
@@ -1866,58 +1949,6 @@ pronouns: [
     { q: "Singular form of 'men' is ________.", options: ["man", "mens", "mann", "min"], answer: 0 },
     { q: "Plural form of 'deer' is ________.", options: ["deers", "deer", "deeren", "deeres"], answer: 1 }
 ],
-            buildSentence: [
-                { words: ["The", "cat", "is", "sleeping", "on", "the", "mat."] },
-                { words: ["She", "likes", "to", "eat", "fresh", "apples."] },
-                { words: ["They", "are", "playing", "football", "in", "the", "park."] },
-                { words: ["My", "father", "drives", "a", "blue", "car."] },
-                { words: ["The", "sun", "rises", "in", "the", "east."] },
-                { words: ["We", "go", "to", "school", "every", "morning."] },
-                { words: ["Ahmad", "is", "reading", "an", "interesting", "book."] },
-                { words: ["Birds", "are", "flying", "high", "in", "the", "sky."] },
-                { words: ["Mother", "cooked", "delicious", "food", "for", "dinner."] },
-                { words: ["Please", "wash", "your", "hands", "before", "eating."] },
-                { words: ["The", "little", "dog", "barked", "at", "the", "stranger."] },
-                { words: ["I", "brush", "my", "teeth", "twice", "a", "day."] },
-                { words: ["There", "are", "many", "books", "in", "the", "library."] },
-                { words: ["She", "wears", "a", "beautiful", "dress", "today."] },
-                { words: ["The", "children", "are", "swimming", "in", "the", "pool."] },
-                { words: ["He", "bought", "a", "new", "laptop", "yesterday."] },
-                { words: ["Water", "boils", "at", "one", "hundred", "degrees."] },
-                { words: ["An", "elephant", "is", "a", "very", "huge", "animal."] },
-                { words: ["They", "will", "visit", "their", "grandparents", "this", "weekend."] },
-                { words: ["The", "teacher", "wrote", "on", "the", "whiteboard."] },
-                { words: ["It", "started", "to", "rain", "heavily", "last", "night."] },
-                { words: ["My", "sister", "loves", "to", "draw", "pictures."] },
-                { words: ["We", "should", "drink", "plenty", "of", "water."] },
-                { words: ["The", "boy", "fell", "off", "his", "bicycle."] },
-                { words: ["Cats", "like", "to", "drink", "warm", "milk."] },
-                { words: ["She", "opened", "the", "window", "for", "fresh", "air."] },
-                { words: ["They", "won", "the", "first", "prize", "in", "the", "contest."] },
-                { words: ["A", "giraffe", "has", "a", "very", "long", "neck."] },
-                { words: ["He", "is", "listening", "to", "his", "favorite", "music."] },
-                { words: ["My", "mother", "baked", "a", "chocolate", "cake."] },
-                { words: ["The", "train", "arrived", "at", "the", "station", "on", "time."] },
-                { words: ["We", "enjoyed", "our", "trip", "to", "Penang."] },
-                { words: ["Always", "be", "polite", "to", "your", "teachers."] },
-                { words: ["The", "monkeys", "are", "eating", "sweet", "bananas."] },
-                { words: ["She", "finished", "her", "homework", "before", "dinner."] },
-                { words: ["He", "lost", "his", "wallet", "in", "the", "market."] },
-                { words: ["The", "clock", "hangs", "on", "the", "living", "room", "wall."] },
-                { words: ["I", "saw", "a", "colorful", "butterfly", "in", "the", "garden."] },
-                { words: ["They", "walked", "across", "the", "old", "bridge."] },
-                { words: ["The", "doctor", "examined", "the", "sick", "patient."] },
-                { words: ["She", "sings", "a", "sweet", "song", "gracefully."] },
-                { words: ["He", "drinks", "a", "glass", "of", "milk", "every", "morning."] },
-                { words: ["The", "stars", "twinkle", "in", "the", "night", "sky."] },
-                { words: ["We", "must", "keep", "our", "classroom", "clean."] },
-                { words: ["The", "farmer", "is", "planting", "rice", "in", "the", "field."] },
-                { words: ["She", "found", "a", "shiny", "coin", "on", "the", "ground."] },
-                { words: ["My", "brother", "is", "learning", "how", "to", "swim."] },
-                { words: ["The", "firemen", "put", "out", "the", "big", "fire."] },
-                { words: ["We", "have", "a", "picnic", "at", "the", "beach."] },
-                { words: ["Always", "turn", "off", "the", "lights", "when", "you", "leave."] }
-],
            demonstratives: [
     { q: "________ is my apple here in my hand.", options: ["This", "That", "These", "Those"], answer: 0 },
     { q: "Look at ________ stars high up in the sky.", options: ["this", "that", "these", "those"], answer: 3 },
@@ -2025,6 +2056,58 @@ pronouns: [
             { word: "HAND", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6SOM7n4gFMQYI_cQTUnoprc0RM8beiEt9vzF7pTyHYw&s=10" }
         
         ];
+        const sentenceBank = [
+                "The cat is sleeping on the mat.",
+"She likes to eat fresh apples.",
+"They are playing football in the park.",
+"My father drives a blue car.",
+"The sun rises in the east.",
+"We go to school every morning.",
+"Ahmad is reading an interesting book.",
+"Birds are flying high in the sky.",
+"Mother cooked delicious food for dinner.",
+"Please wash your hands before eating.",
+"The little dog barked at the stranger.",
+"I brush my teeth twice a day.",
+"There are many books in the library.",
+"She wears a beautiful dress today.",
+"The children are swimming in the pool.",
+"He bought a new laptop yesterday.",
+"Water boils at one hundred degrees.",
+"An elephant is a very huge animal.",
+"They will visit their grandparents this weekend.",
+"The teacher wrote on the whiteboard.",
+"It started to rain heavily last night.",
+"My sister loves to draw pictures.",
+"We should drink plenty of water.",
+"The boy fell off his bicycle.",
+"Cats like to drink warm milk.",
+"She opened the window for fresh air.",
+"They won the first prize in the contest.",
+"A giraffe has a very long neck.",
+"He is listening to his favorite music.",
+"My mother baked a chocolate cake.",
+"The train arrived at the station on time.",
+"We enjoyed our trip to Penang.",
+"Always be polite to your teachers.",
+"The monkeys are eating sweet bananas.",
+"She finished her homework before dinner.",
+"He lost his wallet in the market.",
+"The clock hangs on the living room wall.",
+"I saw a colorful butterfly in the garden.",
+"They walked across the old bridge.",
+"The doctor examined the sick patient.",
+"She sings a sweet song gracefully.",
+"He drinks a glass of milk every morning.",
+"The stars twinkle in the night sky.",
+"We must keep our classroom clean.",
+"The farmer is planting rice in the field.",
+"She found a shiny coin on the ground.",
+"My brother is learning how to swim.",
+"The firemen put out the big fire.",
+"We have a picnic at the beach.",
+"Always turn off the lights when you leave."
+        ];
 
         let currentTopic = "";
         let currentQuestions = [];
@@ -2038,6 +2121,13 @@ pronouns: [
         let spellingScore = 0;
         let userFilledLetters = [];
         let availableLetters = [];
+
+        /* BUILD THE SENTENCE VARIABLES */
+        let sentenceQuestions = [];
+        let sentenceIndex = 0;
+        let sentenceScore = 0;
+        let userArrangedWords = [];
+        let availableWords = [];
 
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById("sidebar");
@@ -2103,6 +2193,8 @@ pronouns: [
             selectedQuestionCount = count;
             if (currentTopic === 'spelling') {
                 startSpellingQuiz(count);
+            } else if (currentTopic === 'buildSentence') {
+                startBuildSentenceQuiz(count);
             } else {
                 startQuiz(currentTopic, selectedQuestionCount);
             }
@@ -2196,6 +2288,7 @@ pronouns: [
             }
         }
 
+        /* SPELLING QUIZ LOGIC */
         function startSpellingQuiz(count) {
             let extended = [];
             while (extended.length < count) {
@@ -2328,6 +2421,134 @@ pronouns: [
             }
         }
 
+        /* BUILD THE SENTENCE LOGIC */
+        function startBuildSentenceQuiz(count) {
+            let extended = [];
+            while (extended.length < count) {
+                extended = extended.concat(shuffle([...sentenceBank]));
+            }
+            sentenceQuestions = extended.slice(0, count);
+            sentenceIndex = 0;
+            sentenceScore = 0;
+
+            document.getElementById('sentence-total-q-num').innerText = count;
+            document.getElementById('sentence-current-score').innerText = sentenceScore;
+
+            showScreen('sentence-quiz-screen');
+            loadSentenceQuestion();
+        }
+
+        function loadSentenceQuestion() {
+            canAnswer = true;
+            document.getElementById('sentence-check-btn').style.display = 'inline-block';
+            document.getElementById('sentence-next-btn').style.display = 'none';
+            
+            const correctBox = document.getElementById('sentence-correct-answer');
+            correctBox.style.display = 'none';
+            correctBox.innerHTML = '';
+
+            const targetSentence = sentenceQuestions[sentenceIndex];
+            document.getElementById('sentence-question-num').innerText = sentenceIndex + 1;
+
+            const words = targetSentence.split(" ");
+            userArrangedWords = [];
+            
+            availableWords = shuffle([...words]).map((w, idx) => ({
+                id: idx,
+                word: w,
+                used: false
+            }));
+
+            renderSentenceBoard();
+        }
+
+        function renderSentenceBoard() {
+            const dropArea = document.getElementById('sentence-drop-area');
+            dropArea.innerHTML = '';
+
+            userArrangedWords.forEach((item, arrIdx) => {
+                const chip = document.createElement('div');
+                chip.className = 'word-chip';
+                chip.innerText = item.word;
+                chip.onclick = () => {
+                    if (!canAnswer) return;
+                    availableWords[item.bankIndex].used = false;
+                    userArrangedWords.splice(arrIdx, 1);
+                    renderSentenceBoard();
+                };
+                dropArea.appendChild(chip);
+            });
+
+            const wordBank = document.getElementById('sentence-word-bank');
+            wordBank.innerHTML = '';
+
+            availableWords.forEach((item, bankIdx) => {
+                const chip = document.createElement('div');
+                chip.className = `word-chip ${item.used ? 'used' : ''}`;
+                chip.innerText = item.word;
+
+                chip.onclick = () => {
+                    if (!canAnswer || item.used) return;
+                    userArrangedWords.push({ word: item.word, bankIndex: bankIdx });
+                    availableWords[bankIdx].used = true;
+                    renderSentenceBoard();
+                };
+
+                chip.draggable = !item.used && canAnswer;
+                chip.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({ word: item.word, bankIndex: bankIdx }));
+                };
+
+                wordBank.appendChild(chip);
+            });
+
+            dropArea.ondragover = (e) => e.preventDefault();
+            dropArea.ondrop = (e) => {
+                e.preventDefault();
+                if (!canAnswer) return;
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                if (!availableWords[data.bankIndex].used) {
+                    userArrangedWords.push({ word: data.word, bankIndex: data.bankIndex });
+                    availableWords[data.bankIndex].used = true;
+                    renderSentenceBoard();
+                }
+            };
+        }
+
+        function checkSentenceAnswer() {
+            if (!canAnswer) return;
+
+            const targetSentence = sentenceQuestions[sentenceIndex];
+            const userSentence = userArrangedWords.map(item => item.word).join(" ");
+
+            canAnswer = false;
+            document.getElementById('sentence-check-btn').style.display = 'none';
+
+            if (userSentence === targetSentence) {
+                playCorrectSound();
+                sentenceScore++;
+                document.getElementById('sentence-current-score').innerText = sentenceScore;
+            } else {
+                playWrongSound();
+                const correctBox = document.getElementById('sentence-correct-answer');
+                correctBox.innerHTML = `<strong>Correct Sentence:</strong><br>${targetSentence}`;
+                correctBox.style.display = 'block';
+            }
+
+            document.getElementById('sentence-next-btn').style.display = 'inline-block';
+        }
+
+        function nextSentenceQuestion() {
+            sentenceIndex++;
+            if (sentenceIndex < sentenceQuestions.length) {
+                loadSentenceQuestion();
+            } else {
+                score = sentenceScore;
+                selectedQuestionCount = sentenceQuestions.length;
+                showResults();
+            }
+        }
+
         function showResults() {
             const completionTime = getFormattedDateTime();
             window.saveSessionRecord(currentTopic, score, selectedQuestionCount, completionTime);
@@ -2340,7 +2561,7 @@ pronouns: [
             const feedback = document.getElementById('feedback-message');
             
             if (percentage === 100) {
-                feedback.innerText = "🌟 Outstanding! Perfect Score! You're a Spelling Champion! 🌟";
+                feedback.innerText = "🌟 Outstanding! Perfect Score! You're a Grammar Champion! 🌟";
             } else if (percentage >= 70) {
                 feedback.innerText = "👍 Great Job! Keep up the brilliant work!";
             } else if (percentage >= 50) {
