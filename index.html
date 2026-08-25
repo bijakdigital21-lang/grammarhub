@@ -114,6 +114,42 @@
             transform: translateX(5px);
         }
 
+        /* STYLING UNTUK BUTTON LOCKED DALAM MENU */
+        .nav-item.locked {
+            background-color: #A0AEC0 !important;
+            color: #E2E8F0 !important;
+            cursor: not-allowed !important;
+            opacity: 0.85;
+            position: relative;
+        }
+
+        .nav-item.locked:hover {
+            transform: none !important;
+            background-color: #A0AEC0 !important;
+        }
+
+        /* STYLING KHAS UNTUK UNLOCK FULL ACCESS BUTTON DALAM MENU */
+        .nav-item.unlock-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #2C3E50;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(255, 165, 0, 0.4);
+            animation: pulseUnlock 2s infinite ease-in-out;
+        }
+
+        .nav-item.unlock-btn:hover {
+            background: linear-gradient(135deg, #FFC107, #FF8C00);
+            color: #1A252F;
+            transform: translateX(5px) scale(1.02);
+        }
+
+        @keyframes pulseUnlock {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 10px rgba(255, 165, 0, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 6px 15px rgba(255, 193, 7, 0.7); }
+        }
+
+      
+
         .nav-item.logout-btn {
             background-color: #E74C3C;
             margin-top: auto;
@@ -432,6 +468,37 @@
             box-shadow: 0 2px 0 #E65100;
         }
 
+        /* STYLING UNTUK UNLOCK FULL ACCESS BUTTON DALAM PAPARAN UTAMA LOG MASUK / REGISTER */
+        .unlock-full-btn {
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            color: #2C3E50;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 20px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #B8860B;
+            width: 100%;
+            margin-top: 10px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+        }
+
+        .unlock-full-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #B8860B;
+            background: linear-gradient(135deg, #FFE135, #FFA500);
+        }
+
+        .unlock-full-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #B8860B;
+        }
+
         .home-btn {
             background-color: #3498DB;
             box-shadow: 0 4px 0 #1F618D;
@@ -543,7 +610,7 @@
 
         .count-btn:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #8d5cc4;
+            box-shadow: 0 4px 0 #8d5cc4;
         }
 
         .count-btn.locked {
@@ -758,12 +825,22 @@
             <li class="nav-item active" onclick="playClickSound(); navigateTo('home-screen', this)">
                 📚 Home
             </li>
+            <!-- BUTTON UNLOCK FULL ACCESS DALAM MENU -->
+            <a href="https://bijakdigital21-lang.github.io/adikbijak/" target="_blank" class="nav-item unlock-btn" onclick="playClickSound()">
+                ⭐ Unlock Full Access
+            </a>
+            <!-- BUTTON LITTLE READERS HUB YANG DI-LOCK -->
+            <li class="nav-item locked" onclick="playClickSound(); alert('Upgrade to lifetime access to unlock Little Readers Hub!')">
+                🔒 Little Readers Hub
+            </li>
             <li class="nav-item" onclick="playClickSound(); navigateTo('profile-view-screen', this)">
                 👤 Profiles
             </li>
             <li class="nav-item" onclick="playClickSound(); navigateTo('scores-screen', this)">
                 🏆 Scores
             </li>
+           
+            </a>
             <li class="nav-item logout-btn" onclick="playClickSound(); logout()">
                 🚪 Logout
             </li>
@@ -777,8 +854,8 @@
             <!-- 1A. REGISTER SCREEN -->
             <div id="register-screen" class="card active">
                 <h1 style="font-family: 'Fredoka One', cursive; color: #FF5757; margin-bottom: 5px;">Grammar Hub</h1>
-                <h2>Create Account to Access Free Trial 📝</h2>
-                <p style="margin-top: 1px; color: #666;">Register first to start learning English!</p>
+                <h2>Register First to Start Learning English 📝</h2>
+                <p style="margin-top: 1px; color: #666;">Register NOW - No Payment Required!</p>
                 
                 <div class="input-group">
                     <label for="reg-name">Student / Parent Name</label>
@@ -794,6 +871,11 @@
                 </div>
                 <button class="action-btn" style="display:inline-block; width: 100%; background-color: var(--primary-pink); box-shadow: 0 4px 0 #c74597;" onclick="playClickSound(); handleRegister()">Register Now 🚀</button>
                 
+                <!-- BUTTON UNLOCK FULL ACCESS DALAM PAPARAN REGISTER -->
+                <a href="https://bijakdigital21-lang.github.io/adikbijak/" target="_blank" class="unlock-full-btn" onclick="playClickSound()">
+                    ⭐ Unlock Full Access
+                </a>
+
                 <div class="auth-switch-text">
                     Already have an account? <span class="auth-switch-link" onclick="playClickSound(); showScreen('login-screen')">Log In Here</span>
                 </div>
@@ -814,6 +896,11 @@
                     <input type="password" id="login-password" class="form-input" placeholder="••••••••">
                 </div>
                 <button class="action-btn" style="display:inline-block; width: 100%;" onclick="playClickSound(); handleLogin()">Log In 🚀</button>
+
+                <!-- BUTTON UNLOCK FULL ACCESS DALAM PAPARAN LOGIN -->
+                <a href="hhttps://bijakdigital21-lang.github.io/adikbijak/" target="_blank" class="unlock-full-btn" onclick="playClickSound()">
+                    ⭐ Unlock Full Access
+                </a>
 
                 <div class="auth-switch-text">
                     Don't have an account yet? <span class="auth-switch-link" onclick="playClickSound(); showScreen('register-screen')">Register Here</span>
